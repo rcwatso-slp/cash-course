@@ -1,21 +1,31 @@
+import { RESTAURANTS } from '../data/restaurants';
+import { STORES } from '../data/stores';
 import { readJSON, removeKey, writeJSON } from './storage';
 
-export type ModuleId = 'mcdoogles' | 'quickChange' | 'checkChange';
-export type Skill = 'subtotal' | 'tax' | 'total' | 'pay' | 'change' | 'checkChange';
+// Restaurants and stores log under their own id (mcdoogles, chipoodle, falmart...).
+export type ModuleId = string;
+export type Skill = 'subtotal' | 'tax' | 'total' | 'pay' | 'change' | 'checkChange' | 'shipping' | 'left' | 'moreNeeded' | 'weeks';
 
-export const MODULE_LABELS: Record<ModuleId, string> = {
-  mcdoogles: 'McDoogles',
+const MODULE_LABELS: Record<string, string> = {
   quickChange: 'Quick Change',
   checkChange: 'Check the Change',
+  savings: 'Saving Up',
+  ...Object.fromEntries([...RESTAURANTS, ...STORES].map((x) => [x.id, x.name])),
 };
+
+export const moduleLabel = (id: string): string => MODULE_LABELS[id] ?? id;
 
 export const SKILL_LABELS: Record<Skill, string> = {
   subtotal: 'Add up the order',
   tax: 'Figure the tax',
-  total: 'Total with tax',
+  total: 'Total (with tax/shipping)',
   pay: 'Pick bills to pay',
   change: 'Make change',
   checkChange: 'Check the change',
+  shipping: 'Free shipping?',
+  left: 'Money left on card',
+  moreNeeded: 'How much more to save',
+  weeks: 'Weeks to save',
 };
 
 export interface Trial {
@@ -106,7 +116,7 @@ export function toCSV(trials: Trial[]): string {
   const rows = trials.map((t) => {
     const d = new Date(t.at);
     return [
-      d.toLocaleDateString('en-US'), d.toLocaleTimeString('en-US'), t.nickname, MODULE_LABELS[t.module],
+      d.toLocaleDateString('en-US'), d.toLocaleTimeString('en-US'), t.nickname, moduleLabel(t.module),
       SKILL_LABELS[t.skill], t.level, t.question, t.answer, t.attempts, t.helpLevel,
       HELP_NAMES[t.helpLevel], t.independent ? 'yes' : 'no', t.seconds, t.calculator ? 'yes' : 'no',
     ].map(esc).join(',');

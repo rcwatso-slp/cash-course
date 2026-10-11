@@ -3,10 +3,14 @@ import { ClinicianGate } from './clinician/ClinicianPanel';
 import { Calculator } from './components/Calculator';
 import { getSessionStart } from './lib/log';
 import { SettingsProvider, useSettings } from './lib/settings';
+import { RESTAURANTS } from './data/restaurants';
+import { STORES } from './data/stores';
 import CheckChange from './modules/CheckChange';
 import Home from './modules/Home';
-import McDoogles from './modules/McDoogles';
 import QuickChange from './modules/QuickChange';
+import Restaurant from './modules/restaurant/Restaurant';
+import SavingUp from './modules/SavingUp';
+import Store from './modules/store/Store';
 
 // Hash routes (#/mcdoogles) work on GitHub Pages without server configuration.
 function useRoute(): string {
@@ -22,11 +26,22 @@ function useRoute(): string {
   return hash.replace(/^#\/?/, '');
 }
 
-const ROUTES: Record<string, () => JSX.Element> = {
-  mcdoogles: McDoogles,
+const DRILLS: Record<string, () => JSX.Element> = {
   'quick-change': QuickChange,
   'check-change': CheckChange,
+  'saving-up': SavingUp,
 };
+
+/** #/mcdoogles, #/falmart, #/quick-change ... or null for Home. */
+function pageFor(route: string): JSX.Element | null {
+  const Drill = DRILLS[route];
+  if (Drill) return <Drill />;
+  const restaurant = RESTAURANTS.find((r) => r.id === route);
+  if (restaurant) return <Restaurant restaurant={restaurant} />;
+  const store = STORES.find((st) => st.id === route);
+  if (store) return <Store store={store} />;
+  return null;
+}
 
 function Shell() {
   const route = useRoute();
@@ -43,7 +58,7 @@ function Shell() {
     root.dataset.contrast = settings.highContrast ? 'high' : 'normal';
   }, [settings.largeText, settings.highContrast]);
 
-  const Page = ROUTES[route] ?? Home;
+  const page = pageFor(route);
 
   return (
     <div className="app">
@@ -51,14 +66,14 @@ function Shell() {
         <a href="#/" className="app-name">
           💵 Cash Course
         </a>
-        {route && ROUTES[route] && (
+        {page && (
           <a href="#/" className="button home-btn">
             ← Home
           </a>
         )}
       </header>
       <main className="app-main">
-        <Page />
+        {page ?? <Home />}
       </main>
       <footer className="app-footer">
         <button className="clinician-btn" onClick={() => setPanelOpen(true)}>

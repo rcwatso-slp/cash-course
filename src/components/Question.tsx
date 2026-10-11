@@ -33,7 +33,8 @@ interface BaseProps {
 type Props = BaseProps &
   (
     | { kind: 'money'; answer: Cents; inputLabel?: string }
-    | { kind: 'yesno'; answer: boolean }
+    | { kind: 'number'; answer: number; inputLabel: string; unit: string }
+    | { kind: 'yesno'; answer: boolean; yesLabel?: string; noLabel?: string }
     | {
         kind: 'custom';
         check: (value: unknown) => CheckResult;
@@ -102,9 +103,18 @@ export function Question(props: Props) {
     setFeedback({ tone: 'bad', msg });
   }
 
-  function submitMoney(e: FormEvent) {
+  function submitText(e: FormEvent) {
     e.preventDefault();
-    if (props.kind !== 'money' || solved) return;
+    if (solved) return;
+    if (props.kind === 'number') {
+      if (!/^\s*\d+\s*$/.test(text)) {
+        setFeedback({ tone: 'info', msg: text.trim() ? 'Type a whole number, like 6.' : 'Type your answer first.' });
+        return;
+      }
+      grade(Number(text) === props.answer);
+      return;
+    }
+    if (props.kind !== 'money') return;
     const r = parseMoney(text);
     if (!r.ok) {
       const msg =
@@ -135,20 +145,21 @@ export function Question(props: Props) {
         <ReadAloud text={props.say} />
       </div>
 
-      {props.kind === 'money' && (
-        <form className="answer-row" onSubmit={submitMoney}>
+      {(props.kind === 'money' || props.kind === 'number') && (
+        <form className="answer-row" onSubmit={submitText}>
           <label htmlFor="answer">{props.inputLabel ?? 'Your answer'}</label>
           <div className="money-input">
-            <span aria-hidden="true">$</span>
+            {props.kind === 'money' && <span aria-hidden="true">$</span>}
             <input
               id="answer"
-              inputMode="decimal"
+              inputMode={props.kind === 'money' ? 'decimal' : 'numeric'}
               autoComplete="off"
               autoFocus
               value={text}
               readOnly={solved}
               onChange={(e) => setText(e.target.value)}
             />
+            {props.kind === 'number' && <span className="input-unit">{props.unit}</span>}
           </div>
           <button type="submit" className="primary" disabled={solved}>
             Check
@@ -159,10 +170,10 @@ export function Question(props: Props) {
       {props.kind === 'yesno' && (
         <div className="yesno">
           <button type="button" className="big-choice" disabled={solved} onClick={() => grade(props.answer, 'Not quite. Look again.')}>
-            Yes, it's right
+            {props.yesLabel ?? "Yes, it's right"}
           </button>
           <button type="button" className="big-choice" disabled={solved} onClick={() => grade(!props.answer, 'Not quite. Look again.')}>
-            No, it's wrong
+            {props.noLabel ?? "No, it's wrong"}
           </button>
         </div>
       )}

@@ -106,19 +106,22 @@ export interface CountUpStep {
 }
 
 /**
- * Cashier-style counting up: next 10¢, next dollar, next $10, then the amount paid.
- * $7.39 -> $20: 7.40 (+1¢), 8.00 (+60¢), 10.00 (+$2), 20.00 (+$10).
+ * Cashier-style counting up: next dollar, next $10, next $100, then the target.
+ * $7.39 -> $20: 8.00 (+61¢), 10.00 (+$2), 20.00 (+$10).
+ * When the target has cents (saving up for $169.99) it also stops at the target's
+ * whole tens and dollars: ... 100.00, 160.00 (+$60), 169.00 (+$9), 169.99 (+99¢).
  */
 export function countUpSteps(from: Cents, to: Cents): CountUpStep[] {
   const steps: CountUpStep[] = [];
   let cur = from;
-  for (const unit of [10, 100, 1000]) {
-    const mark = Math.ceil(cur / unit) * unit;
+  const step = (mark: Cents) => {
     if (mark > cur && mark < to) {
       steps.push({ from: cur, to: mark, jump: mark - cur });
       cur = mark;
     }
-  }
+  };
+  for (const unit of [100, 1000, 10000]) step(Math.ceil(cur / unit) * unit);
+  for (const unit of [1000, 100]) step(Math.floor(to / unit) * unit);
   if (cur < to) steps.push({ from: cur, to, jump: to - cur });
   return steps;
 }

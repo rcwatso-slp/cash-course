@@ -96,60 +96,81 @@ export function taxHelps(subtotal: Cents, rate: number): Helps {
   ];
 }
 
-export function addTaxHelps(subtotal: Cents, tax: Cents): Helps {
-  const total = subtotal + tax;
-  const hint = `Add the subtotal (${formatMoney(subtotal)}) and the tax (${formatMoney(tax)}).`;
+/** Subtotal + shipping + tax (whichever apply). */
+export function addPartsHelps(parts: PricedItem[]): Helps {
+  const total = sum(parts.map((p) => p.cents));
+  const named = parts.map((p) => `the ${p.name.toLowerCase()} (${formatMoney(p.cents)})`);
+  const hint = `Add ${named.length > 1 ? `${named.slice(0, -1).join(', ')} and ${named[named.length - 1]}` : named[0]}.`;
   return [
     { content: <p>{hint}</p>, say: hint },
     {
       content: (
         <>
           <p>Line up the dots. Add each column, starting on the right.</p>
-          <ColumnMath op="+" rows={[subtotal, tax]} />
+          <ColumnMath op="+" rows={parts.map((p) => p.cents)} />
         </>
       ),
-      say: `Add ${formatMoney(subtotal)} plus ${formatMoney(tax)}.`,
+      say: `Add ${parts.map((p) => formatMoney(p.cents)).join(' plus ')}.`,
     },
     {
       content: (
         <>
           <p className="big-math">
-            {formatMoney(subtotal)} + {formatMoney(tax)} = <b>{formatMoney(total)}</b>
+            {parts.map((p) => formatMoney(p.cents)).join(' + ')} = <b>{formatMoney(total)}</b>
           </p>
           {finish(total)}
         </>
       ),
-      say: `${formatMoney(subtotal)} plus ${formatMoney(tax)} equals ${formatMoney(total)}.`,
+      say: `${parts.map((p) => formatMoney(p.cents)).join(' plus ')} equals ${formatMoney(total)}.`,
     },
   ];
 }
 
-export function changeHelps(price: Cents, paid: Cents, style: 'countUp' | 'column'): Helps {
-  const change = paid - price;
-  const coins = breakdown(change);
+export type Difference = 'change' | 'left' | 'more';
+
+const DIFFERENCE_TEXT: Record<Difference, { hint: (from: string, to: string) => string; countUp: string }> = {
+  change: {
+    hint: (from, to) => `Change is what you paid minus the price. Try counting up from ${from} to ${to}.`,
+    countUp: 'Count up from the price to what you paid, like a cashier does.',
+  },
+  left: {
+    hint: (from, to) => `What's left is your gift card balance minus your total. Try counting up from ${from} to ${to}.`,
+    countUp: 'Count up from your total to your gift card balance.',
+  },
+  more: {
+    hint: (from, to) => `How much more = the price minus what you have. Try counting up from ${from} to ${to}.`,
+    countUp: 'Count up from what you have to the price.',
+  },
+};
+
+/** Help for any "bigger minus smaller" money problem: change, money left, how much more. */
+export function changeHelps(from: Cents, to: Cents, style: 'countUp' | 'column', kind: Difference = 'change'): Helps {
+  const diff = to - from;
+  const coins = breakdown(diff);
+  const text = DIFFERENCE_TEXT[kind];
   const hint =
     style === 'countUp'
-      ? `Change is what you paid minus the price. Try counting up from ${formatMoney(price)} to ${formatMoney(paid)}.`
-      : `Change is what you paid minus the price. Subtract: ${formatMoney(paid)} − ${formatMoney(price)}.`;
+      ? text.hint(formatMoney(from), formatMoney(to))
+      : `${text.hint(formatMoney(from), formatMoney(to)).split('.')[0]}. Subtract: ${formatMoney(to)} − ${formatMoney(from)}.`;
   const level2: Help =
     style === 'countUp'
       ? {
           content: (
             <>
-              <p>Count up from the price to what you paid, like a cashier does.</p>
-              <CountUpLine from={price} to={paid} />
+              <p>{text.countUp}</p>
+              <CountUpLine from={from} to={to} />
             </>
           ),
-          say: countUpSpeech(price, paid),
+          say: countUpSpeech(from, to),
         }
       : {
           content: (
             <>
               <p>Subtract each column, starting on the right. The small numbers show where you borrowed.</p>
-              <ColumnMath op="−" rows={[paid, price]} showRegroup />
+              <ColumnMath op="−" rows={[to, from]} showRegroup />
             </>
           ),
-          say: `Subtract ${formatMoney(paid)} minus ${formatMoney(price)}, one column at a time, starting on the right.`,
+          say: `Subtract ${formatMoney(to)} minus ${formatMoney(from)}, one column at a time, starting on the right.`,
         };
   return [
     { content: <p>{hint}</p>, say: hint },
@@ -158,14 +179,64 @@ export function changeHelps(price: Cents, paid: Cents, style: 'countUp' | 'colum
       content: (
         <>
           <p className="big-math">
-            {formatMoney(paid)} − {formatMoney(price)} = <b>{formatMoney(change)}</b>
+            {formatMoney(to)} − {formatMoney(from)} = <b>{formatMoney(diff)}</b>
           </p>
-          <p>That's {describeDenoms(coins)}:</p>
-          <MoneyPile denoms={coins} />
-          {finish(change)}
+          {kind === 'change' && (
+            <>
+              <p>That's {describeDenoms(coins)}:</p>
+              <MoneyPile denoms={coins} />
+            </>
+          )}
+          {finish(diff)}
         </>
       ),
-      say: `${formatMoney(paid)} minus ${formatMoney(price)} equals ${formatMoney(change)}. That's ${describeDenoms(coins)}.`,
+      say: `${formatMoney(to)} minus ${formatMoney(from)} equals ${formatMoney(diff)}.${kind === 'change' ? ` That's ${describeDenoms(coins)}.` : ''}`,
+    },
+  ];
+}
+
+/** How many weeks of saving `weekly` until you reach `need`? */
+export function weeksHelps(need: Cents, weekly: Cents): Helps {
+  const weeks = Math.ceil(need / weekly);
+  const rows = Array.from({ length: weeks }, (_, i) => (i + 1) * weekly);
+  // Show the first few weeks, but never the week that answers it.
+  const shown = Math.max(1, Math.min(3, weeks - 1));
+  const hint = `Count by ${formatMoney(weekly)} until you get to ${formatMoney(need)} or more. Count how many times you counted.`;
+  return [
+    { content: <p>{hint}</p>, say: hint },
+    {
+      content: (
+        <>
+          <p>Each week you add {formatMoney(weekly)}:</p>
+          <ol className="weeks-list">
+            {rows.slice(0, shown).map((r, i) => (
+              <li key={i}>
+                Week {i + 1}: {formatMoney(r)}
+              </li>
+            ))}
+            {shown < weeks && <li className="muted">Keep going… stop when you reach {formatMoney(need)}.</li>}
+          </ol>
+        </>
+      ),
+      say: `Week 1, ${formatMoney(weekly)}. Week 2, ${formatMoney(weekly * 2)}. Keep counting by ${formatMoney(weekly)} until you reach ${formatMoney(need)}.`,
+    },
+    {
+      content: (
+        <>
+          <ol className="weeks-list">
+            {rows.map((r, i) => (
+              <li key={i} className={i === weeks - 1 ? 'weeks-done' : ''}>
+                Week {i + 1}: {formatMoney(r)}
+                {i === weeks - 1 ? ` ✓ that's at least ${formatMoney(need)}` : ''}
+              </li>
+            ))}
+          </ol>
+          <p className="help-finish">
+            It takes <b>{weeks} weeks</b>. Type {weeks} to finish.
+          </p>
+        </>
+      ),
+      say: `After ${weeks} weeks you have ${formatMoney(weeks * weekly)}, which is enough. It takes ${weeks} weeks.`,
     },
   ];
 }

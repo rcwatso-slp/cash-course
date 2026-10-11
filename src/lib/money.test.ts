@@ -75,17 +75,20 @@ describe('breakdown', () => {
 
 describe('countUpSteps', () => {
   it('counts up like a cashier', () => {
-    expect(countUpSteps(739, 2000).map((s) => s.to)).toEqual([740, 800, 1000, 2000]);
-    expect(countUpSteps(739, 2000).map((s) => s.jump)).toEqual([1, 60, 200, 1000]);
+    expect(countUpSteps(739, 2000).map((s) => s.to)).toEqual([800, 1000, 2000]);
+    expect(countUpSteps(739, 2000).map((s) => s.jump)).toEqual([61, 200, 1000]);
   });
   it('handles next-dollar-up and whole dollars', () => {
-    expect(countUpSteps(739, 800).map((s) => s.to)).toEqual([740, 800]);
+    expect(countUpSteps(739, 800).map((s) => s.jump)).toEqual([61]);
     expect(countUpSteps(1300, 2000).map((s) => s.jump)).toEqual([700]);
     expect(countUpSteps(700, 1000).map((s) => s.jump)).toEqual([300]);
   });
+  it('stops at the target dollars when the target has cents', () => {
+    expect(countUpSteps(6250, 16999).map((s) => s.to)).toEqual([6300, 7000, 10000, 16000, 16900, 16999]);
+  });
   it('always adds up to the change', () => {
-    for (let i = 0; i < 500; i++) {
-      const paid = [500, 1000, 2000, 5000][i % 4];
+    for (let i = 0; i < 2000; i++) {
+      const paid = i % 2 ? [500, 1000, 2000, 5000][i % 4] : 1 + Math.floor(Math.random() * 50000);
       const price = 1 + Math.floor(Math.random() * (paid - 1));
       const steps = countUpSteps(price, paid);
       expect(sum(steps.map((s) => s.jump))).toBe(paid - price);

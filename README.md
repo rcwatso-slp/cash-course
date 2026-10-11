@@ -4,13 +4,17 @@ A money-skills practice site for therapy sessions. It covers ordering food, addi
 
 See [PLAN.md](PLAN.md) for the full roadmap.
 
-## What's in this version (Phase 1)
+## What's in it
 
-| Activity | What he practices |
-|---|---|
-| **McDoogles** | Order from a kiosk menu → add up the order → (tax) → pay → work out the change → receipt |
-| **Quick Change** | "The price is $7.39. You pay with $20. How much change?" Sets of 5–20 problems. |
-| **Check the Change** | Work out the change, then check what the cashier hands back. Sometimes it's wrong. He learns what to say. |
+| Section | Activity | What he practices |
+|---|---|---|
+| 🍽️ Eat out | **McDoogles, Taco Smell, Chipoodle, Domin-Oops, Starducks** | Order (kiosk or menu board) → add up the order → (tax) → pay → work out the change → receipt. Chipoodle and Domin-Oops have build-your-own items with paid add-ons (guac, toppings). Starducks has Tall/Grande/Quacki sizes and add-ins. |
+| 🛒 Shop online | **Fal-Mart, Amazoom, LEGGO Store** | Search and browse → product page → cart → subtotal → pick delivery → "Is shipping free?" → total with shipping/tax → how much is left on the gift card → place order |
+| 💪 Money skills | **Quick Change** | "The price is $7.39. You pay with $20. How much change?" |
+| | **Check the Change** | Work out the change, then check what the cashier hands back, and learn what to say if it's wrong |
+| | **Saving Up** | Pick a goal (LEGGO Star Warz sets, trail camera, deer license…): "How much more do you need?" and "How many weeks?" |
+
+With **Order type → Task**, restaurants give an **order card** and stores give a **shopping list**, sometimes including "the cheapest ___", so he has to compare prices.
 
 Every problem has three help levels: **Hint → More help → Answer**. Each problem is logged with the highest help level used, the number of tries, the time taken and whether he used the calculator.
 
@@ -18,7 +22,7 @@ Every problem has three help levels: **Hint → More help → Answer**. Each pro
 
 Click **🔒 Clinician** at the bottom-left of any page. The first time, you'll create a 4-digit PIN.
 
-- **Ordering:** price difficulty (whole dollars → cents), free choice vs. order card, running total on/off
+- **Ordering and shopping:** price difficulty (whole dollars → cents), free choice vs. task (order card / shopping list), kiosk vs. menu board, running total on/off, gift card amount for online stores
 - **Tax:** on/off, rate (default 7.25%), whether the app or the client works out the tax
 - **Paying:** app pays with the next bill up or a $20, client pays the next dollar up, or client picks bills from a wallet
 - **Change help:** count up like a cashier (number line) or column subtraction with borrowing shown
@@ -32,9 +36,13 @@ The PIN only keeps settings away from the client. It isn't real security. All da
 
 **Privacy:** use initials or a nickname, never a full name.
 
-## Editing menus and prices
+## Editing menus, products and prices
 
-The McDoogles menu is in [src/data/mcdoogles.ts](src/data/mcdoogles.ts). Prices are in cents (`599` = $5.99). Change names or prices, then commit and push, and the site updates in a minute or two.
+- Restaurant menus: [src/data/restaurants/](src/data/restaurants/), one file per restaurant
+- Store products: [src/data/stores/](src/data/stores/). LEGGO and Star Warz items are shared in `toys.ts`, and each store sets its own price.
+- Saving Up goals: the top of [src/modules/SavingUp.tsx](src/modules/SavingUp.tsx)
+
+Prices are in cents (`599` = $5.99). Change names or prices, then commit and push, and the site updates in a minute or two.
 
 ## Running it on your computer
 

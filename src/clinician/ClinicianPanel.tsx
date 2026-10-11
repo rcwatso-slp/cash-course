@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import {
-  MODULE_LABELS, SKILL_LABELS, clearTrials, getTrials, percent, replaceTrials, sessionTrials, startNewSession,
-  summarize, toCSV, type Skill, type Trial,
+  SKILL_LABELS, clearTrials, getTrials, percent, replaceTrials, sessionTrials, startNewSession,
+  moduleLabel, summarize, toCSV, type Skill, type Trial,
 } from '../lib/log';
 import { CHANGE_LEVELS, PRICE_LEVELS, type ChangeLevel, type PriceLevel } from '../lib/problems';
 import { DEFAULT_SETTINGS, useSettings, type HelpLevel, type PayWith, type Settings } from '../lib/settings';
@@ -156,7 +156,7 @@ function SettingsTab() {
       </section>
 
       <section>
-        <h3>Ordering and totals</h3>
+        <h3>Ordering, shopping and totals</h3>
         <Field label="Price difficulty" hint="Applies to the next new order.">
           <Select<PriceLevel>
             label="Price difficulty"
@@ -165,8 +165,16 @@ function SettingsTab() {
             onChange={set('priceLevel')}
           />
         </Field>
-        <Field label="Order type">
-          <Select label="Order type" value={s.orderMode} options={[['free', 'Free choice: he picks what to order'], ['task', 'Order card: he orders what the card says']]} onChange={set('orderMode')} />
+        <Field label="Order type" hint="Restaurants use an order card. Stores use a shopping list.">
+          <Select
+            label="Order type"
+            value={s.orderMode}
+            options={[['free', 'Free choice: he picks what to buy'], ['task', 'Task: order card / shopping list']]}
+            onChange={set('orderMode')}
+          />
+        </Field>
+        <Field label="Restaurant menu style" hint="A menu board is text only and harder to scan, like a real counter.">
+          <Select label="Restaurant menu style" value={s.menuStyle} options={[['kiosk', 'Kiosk with pictures'], ['board', 'Menu board (text only)']]} onChange={set('menuStyle')} />
         </Field>
         <Field label="Show running total" hint="Off means he works out the total himself.">
           <Toggle label="Show running total" checked={s.showRunningTotal} onChange={set('showRunningTotal')} />
@@ -199,7 +207,7 @@ function SettingsTab() {
 
       <section>
         <h3>Paying and change</h3>
-        <Field label="How he pays at McDoogles" hint="Applies to the next new order.">
+        <Field label="How he pays at restaurants" hint="Applies to the next new order.">
           <Select<PayWith>
             label="How he pays"
             value={s.payWith}
@@ -226,8 +234,11 @@ function SettingsTab() {
         <Field label="How often the cashier makes a mistake" hint="Check the Change only.">
           <Select label="Cashier mistake rate" value={s.wrongChangeRate} options={[[0, 'Never'], [0.25, '1 in 4'], [0.5, 'Half the time'], [0.75, '3 in 4']]} onChange={set('wrongChangeRate')} />
         </Field>
-        <Field label="Problems per set" hint="Quick Change and Check the Change.">
+        <Field label="Problems per set" hint="Quick Change, Check the Change and Saving Up.">
           <Select label="Problems per set" value={s.setLength} options={[[5, '5'], [10, '10'], [15, '15'], [20, '20'], [0, 'No limit']]} onChange={set('setLength')} />
+        </Field>
+        <Field label="Gift card for online stores" hint="If an order costs more, the card is bumped up to the next $25.">
+          <Select label="Gift card amount" value={s.giftCard} options={[[2500, '$25'], [5000, '$50'], [7500, '$75'], [10000, '$100'], [20000, '$200']]} onChange={set('giftCard')} />
         </Field>
         <Field label="Wallet" hint="Used when he picks bills himself. Extra $20s are added if needed.">
           <div className="wallet-edit">
@@ -417,7 +428,7 @@ function SessionTab() {
                 {[...trials].reverse().map((t) => (
                   <tr key={t.id} className={t.independent ? 'row-independent' : ''}>
                     <td>{new Date(t.at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}</td>
-                    <td>{MODULE_LABELS[t.module]}</td>
+                    <td>{moduleLabel(t.module)}</td>
                     <td>{SKILL_LABELS[t.skill]}</td>
                     <td>{t.level}</td>
                     <td>{t.question}</td>

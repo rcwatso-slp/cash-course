@@ -94,7 +94,7 @@ Subtraction and change are his main targets, so this module moves up to the MVP.
 | Level | Example (total $7.39, he paid $20) |
 |---|---|
 | 1 Hint | "Change is what you paid minus the total. Try counting up from $7.39 to $20." |
-| 2 More help | A **count-up number line** with the first steps filled in: $7.39 → **$7.40** (+1¢) → **$7.50** (+10¢) → **$8.00** (+50¢) → **$10** (+$2) → **$20** (+$10). He adds up the jumps. Showing the subtraction in a column, with regrouping marked, is an option the clinician can turn on. |
+| 2 More help | A **count-up number line**: $7.39 → **$8.00** (+61¢) → **$10** (+$2) → **$20** (+$10). He adds up the jumps. Showing the subtraction in a column, with regrouping marked, is an option the clinician can turn on. |
 | 3 Answer | "$20.00 − $7.39 = **$12.61**," with the count-up path shown as bills and coins: a $10, two $1s, two quarters, a dime and a penny. |
 
 Counting up is the default because it's how cashiers make change. It avoids borrowing across zeros ($20.00 − $7.39), which is often where subtraction breaks down.
@@ -237,7 +237,7 @@ src/
 - Laptop and phone layouts
 - Deployed to GitHub Pages
 
-**Phase 2: Shopping**
+**Phase 2: Shopping** ✅ Built (October 2026)
 - Fal-Mart and Amazoom with cart and checkout, stocked with LEGGO and Star Warz products
 - Taco Smell, Chipoodle, Domin-Oops and Starducks, plus the menu board format
 - Saving-up goal (LEGGO set)

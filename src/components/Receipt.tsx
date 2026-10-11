@@ -3,22 +3,27 @@ import { formatMoney, type Cents } from '../lib/money';
 export interface ReceiptLine {
   name: string;
   qty: number;
+  /** Price for one */
   price: Cents;
+  /** Indented add-on lines (toppings, guac) */
+  extras?: { label: string; price: Cents }[];
+}
+
+export interface ReceiptRow {
+  label: string;
+  cents: Cents;
+  strong?: boolean;
 }
 
 interface Props {
   store: string;
   orderNumber: number;
   lines: ReceiptLine[];
-  subtotal: Cents;
-  tax: Cents | null;
-  taxRate: number;
-  paid: Cents;
+  rows: ReceiptRow[];
   footer: string;
 }
 
-export function Receipt({ store, orderNumber, lines, subtotal, tax, taxRate, paid, footer }: Props) {
-  const total = subtotal + (tax ?? 0);
+export function Receipt({ store, orderNumber, lines, rows, footer }: Props) {
   return (
     <div className="receipt" aria-label="Receipt">
       <p className="receipt-store">{store}</p>
@@ -26,39 +31,31 @@ export function Receipt({ store, orderNumber, lines, subtotal, tax, taxRate, pai
         Order #{orderNumber} · {new Date().toLocaleDateString('en-US')}
       </p>
       <ul className="receipt-lines">
-        {lines.map((l) => (
-          <li key={l.name}>
-            <span>
-              {l.qty > 1 ? `${l.qty} × ` : ''}
-              {l.name}
-            </span>
-            <span>{formatMoney(l.price * l.qty)}</span>
+        {lines.map((l, i) => (
+          <li key={i}>
+            <div className="receipt-line">
+              <span>
+                {l.qty > 1 ? `${l.qty} × ` : ''}
+                {l.name}
+              </span>
+              <span>{formatMoney(l.price * l.qty)}</span>
+            </div>
+            {l.extras?.map((e, j) => (
+              <div key={j} className="receipt-line receipt-extra">
+                <span>+ {e.label}{l.qty > 1 ? ` × ${l.qty}` : ''}</span>
+                <span>{formatMoney(e.price * l.qty)}</span>
+              </div>
+            ))}
           </li>
         ))}
       </ul>
       <dl className="receipt-totals">
-        <div>
-          <dt>Subtotal</dt>
-          <dd>{formatMoney(subtotal)}</dd>
-        </div>
-        {tax !== null && (
-          <div>
-            <dt>Tax ({taxRate}%)</dt>
-            <dd>{formatMoney(tax)}</dd>
+        {rows.map((r) => (
+          <div key={r.label} className={r.strong ? 'receipt-total' : ''}>
+            <dt>{r.label}</dt>
+            <dd>{formatMoney(r.cents)}</dd>
           </div>
-        )}
-        <div className="receipt-total">
-          <dt>Total</dt>
-          <dd>{formatMoney(total)}</dd>
-        </div>
-        <div>
-          <dt>Cash</dt>
-          <dd>{formatMoney(paid)}</dd>
-        </div>
-        <div className="receipt-total">
-          <dt>Change</dt>
-          <dd>{formatMoney(paid - total)}</dd>
-        </div>
+        ))}
       </dl>
       <p className="receipt-footer">{footer}</p>
     </div>

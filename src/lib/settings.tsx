@@ -14,6 +14,7 @@ export interface Settings {
   taxMode: 'app' | 'client';
   priceLevel: PriceLevel;
   orderMode: 'free' | 'task';
+  menuStyle: 'kiosk' | 'board';
   showRunningTotal: boolean;
   calculator: boolean;
 
@@ -23,6 +24,7 @@ export interface Settings {
   wrongChangeRate: number;
   setLength: number; // problems per set in drills, 0 = no limit
   wallet: Wallet;
+  giftCard: number; // online stores: gift card balance in cents
 
   maxHelp: HelpLevel;
   startHelp: HelpLevel;
@@ -43,6 +45,7 @@ export const DEFAULT_SETTINGS: Settings = {
   taxMode: 'app',
   priceLevel: 3,
   orderMode: 'free',
+  menuStyle: 'kiosk',
   showRunningTotal: false,
   calculator: false,
 
@@ -52,6 +55,7 @@ export const DEFAULT_SETTINGS: Settings = {
   wrongChangeRate: 0.5,
   setLength: 10,
   wallet: { 100: 5, 500: 1, 1000: 1, 2000: 1 },
+  giftCard: 5000,
 
   maxHelp: 3,
   startHelp: 0,
