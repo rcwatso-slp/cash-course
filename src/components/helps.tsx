@@ -126,7 +126,7 @@ export function addPartsHelps(parts: PricedItem[]): Helps {
   ];
 }
 
-export type Difference = 'change' | 'left' | 'more';
+export type Difference = 'change' | 'left' | 'more' | 'balance' | 'extra';
 
 const DIFFERENCE_TEXT: Record<Difference, { hint: (from: string, to: string) => string; countUp: string }> = {
   change: {
@@ -140,6 +140,14 @@ const DIFFERENCE_TEXT: Record<Difference, { hint: (from: string, to: string) => 
   more: {
     hint: (from, to) => `How much more = the price minus what you have. Try counting up from ${from} to ${to}.`,
     countUp: 'Count up from what you have to the price.',
+  },
+  balance: {
+    hint: (from, to) => `Your new balance is your old balance minus what you spent. Try counting up from ${from} to ${to}.`,
+    countUp: 'Count up from what you spent to your old balance.',
+  },
+  extra: {
+    hint: (from, to) => `The extra cost is the DoorDosh total minus the pickup price. Try counting up from ${from} to ${to}.`,
+    countUp: 'Count up from the pickup price to the DoorDosh total.',
   },
 };
 
@@ -306,6 +314,63 @@ export function checkChangeHelps(given: Cents[], correct: Cents): Helps {
         </p>
       ),
       say: `They gave you ${formatMoney(gave)}. It should be ${formatMoney(correct)}. ${verdict}`,
+    },
+  ];
+}
+
+/** Do you have enough money? Works for one price or two things added together. */
+export function affordHelps(have: Cents, prices: Cents[]): Helps {
+  const cost = sum(prices);
+  const enough = cost <= have;
+  const two = prices.length > 1;
+  const hint = two
+    ? `First add the prices together. Then check: is the total ${formatMoney(have)} or less?`
+    : `Is ${formatMoney(cost)} the same as or less than ${formatMoney(have)}? If it is, you have enough.`;
+  const [cd, hd] = [Math.floor(cost / 100), Math.floor(have / 100)];
+  const compare =
+    cd !== hd
+      ? `Look at the dollars first: ${cd} dollars and ${hd} dollars. Which is bigger?`
+      : `The dollars are the same (${cd}). Now compare the cents: ${cost % 100}¢ and ${have % 100}¢.`;
+  const more = two ? `${prices.map(formatMoney).join(' + ')} = ${formatMoney(cost)}. ${compare}` : compare;
+  const answer = enough
+    ? `${formatMoney(cost)} is ${cost === have ? 'exactly' : 'less than'} ${formatMoney(have)}. You have enough${cost === have ? ' (exactly!)' : `, with ${formatMoney(have - cost)} left over`}. The answer is Yes.`
+    : `${formatMoney(cost)} is more than ${formatMoney(have)}. You need ${formatMoney(cost - have)} more. The answer is No.`;
+  return [
+    { content: <p>{hint}</p>, say: hint },
+    { content: <p>{more}</p>, say: more },
+    { content: <p>{answer}</p>, say: answer },
+  ];
+}
+
+/** Tips: 10% is the dot moved one place left; 20% is double that; 15% is 10% plus half. */
+export function tipHelps(subtotal: Cents, pct: number): Helps {
+  const tip = calcTax(subtotal, pct);
+  const ten = Math.round(subtotal / 10);
+  const hint =
+    pct === 20
+      ? 'A 20% tip is 10% two times. To find 10%, move the dot one place to the left.'
+      : pct === 15
+        ? 'A 15% tip is 10% plus half of 10%. To find 10%, move the dot one place to the left.'
+        : `A ${pct}% tip: multiply the food total by ${pct / 100}.`;
+  const more =
+    pct === 20
+      ? `10% of ${formatMoney(subtotal)} is about ${formatMoney(ten)}. Double it: ${formatMoney(ten)} + ${formatMoney(ten)} = ?`
+      : pct === 15
+        ? `10% of ${formatMoney(subtotal)} is about ${formatMoney(ten)}. Half of that is about ${formatMoney(Math.round(ten / 2))}. Add them: ${formatMoney(ten)} + ${formatMoney(Math.round(ten / 2))} = ?`
+        : `${formatMoney(subtotal)} × ${pct / 100} = ?  Round to the nearest cent.`;
+  return [
+    { content: <p>{hint}</p>, say: hint },
+    { content: <p className="big-math">{more}</p>, say: more },
+    {
+      content: (
+        <>
+          <p>
+            The tip is <b>{formatMoney(tip)}</b>. (Being off by a penny is fine.)
+          </p>
+          {finish(tip)}
+        </>
+      ),
+      say: `The tip is ${formatMoney(tip)}.`,
     },
   ];
 }

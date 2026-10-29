@@ -21,6 +21,8 @@ export interface Line {
   extras: Extra[];
   /** Free choices, for display (white rice, mild salsa) */
   details: string[];
+  /** Price for one at the restaurant itself, when the line was priced by a delivery app */
+  regularEach?: Cents;
 }
 
 /** Group label -> chosen choice labels */
@@ -40,23 +42,35 @@ export function defaultChosen(item: MenuItem): Chosen {
  * The key only includes things that change the price, so free choices (rice, salsa) never
  * stop an order from matching its order card.
  */
-export function buildLine(item: MenuItem, size: Size | undefined, chosen: Chosen, level: PriceLevel): Line {
+export function buildLine(
+  item: MenuItem,
+  size: Size | undefined,
+  chosen: Chosen,
+  level: PriceLevel,
+  /** Delivery apps mark prices up */
+  adjust?: (c: Cents) => Cents,
+): Line {
+  const priced = (c: Cents) => levelPrice(adjust ? adjust(c) : c, level);
   const extras: Extra[] = [];
   const details: string[] = [];
+  let regularExtras = 0;
   for (const g of item.options ?? []) {
     for (const label of chosen[g.label] ?? []) {
       const choice = g.choices.find((c) => c.label === label);
       if (!choice) continue;
-      if (choice.price > 0) extras.push({ label: choice.label, price: levelPrice(choice.price, level) });
-      else details.push(choice.label);
+      if (choice.price > 0) {
+        extras.push({ label: choice.label, price: priced(choice.price) });
+        regularExtras += levelPrice(choice.price, level);
+      } else details.push(choice.label);
     }
   }
   const base = size ? size.price : (item.price ?? 0);
   return {
+    ...(adjust ? { regularEach: levelPrice(base, level) + regularExtras } : {}),
     key: [item.id, size?.label ?? '', ...extras.map((e) => e.label).sort()].join('|'),
     name: size ? `${shortSize(size.label)} ${item.name}` : item.name,
     emoji: item.emoji,
-    price: levelPrice(base, level),
+    price: priced(base),
     qty: 1,
     extras,
     details,

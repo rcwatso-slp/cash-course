@@ -9,10 +9,16 @@ See [PLAN.md](PLAN.md) for the full roadmap.
 | Section | Activity | What he practices |
 |---|---|---|
 | 🍽️ Eat out | **McDoogles, Taco Smell, Chipoodle, Domin-Oops, Starducks** | Order (kiosk or menu board) → add up the order → (tax) → pay → work out the change → receipt. Chipoodle and Domin-Oops have build-your-own items with paid add-ons (guac, toppings). Starducks has Tall/Grande/Quacki sizes and add-ins. |
-| 🛒 Shop online | **Fal-Mart, Amazoom, LEGGO Store** | Search and browse → product page → cart → subtotal → pick delivery → "Is shipping free?" → total with shipping/tax → how much is left on the gift card → place order |
+| | **Grapplebee's** | Sit-down restaurant: the server brings the check, he picks or works out the tip, then pays |
+| | **DoorDosh** | Order delivery at higher app prices → add up the delivery fee, service fee, small order fee and tip → "How much extra does delivery cost?" |
+| 🛒 Shop online | **Fal-Mart, Amazoom, LEGGO Store, Bass Bro Shops** | Search and browse → product page → cart → subtotal → pick delivery → "Is shipping free?" → total with shipping/tax → how much is left on the gift card → place order. Bass Bro Shops is hunting and fishing gear (no weapons or ammo). |
 | 💪 Money skills | **Quick Change** | "The price is $7.39. You pay with $20. How much change?" |
 | | **Check the Change** | Work out the change, then check what the cashier hands back, and learn what to say if it's wrong |
 | | **Saving Up** | Pick a goal (LEGGO Star Warz sets, trail camera, deer license…): "How much more do you need?" and "How many weeks?" |
+| | **Can I Afford It?** | "You have $10. It costs $11.29. Can you buy it?" Quick yes/no, then how much is left or how much more he'd need |
+| | **Chaise Bank** | A debit account: purchases and deposits, "What's your balance now?", and cards declined when there isn't enough |
+
+**Budget mode** (clinician setting): "You have $15 to spend." After the total, he answers "Do you have enough?" If not, he goes back and puts something back. In stores, the gift card becomes the budget.
 
 With **Order type → Task**, restaurants give an **order card** and stores give a **shopping list**, sometimes including "the cheapest ___", so he has to compare prices.
 
@@ -29,7 +35,9 @@ Click **🔒 Clinician** at the bottom-left of any page. The first time, you'll 
 - **Help:** how many help levels, start with help showing (errorless), wait before help unlocks, hint after a wrong answer
 - **Calculator:** phone-style calculator on/off. Its use is recorded.
 - **Display:** read-aloud buttons, large text, high contrast
+- **Budget and tips:** budget off, a fixed amount, or different each order; tip mode at Grapplebee's (pick 15/18/20%, or work out 15% or 20%)
 - **This session:** today's results, the share done independently, results by skill, and every problem
+- **Progress:** a chart of the share done independently each day (by skill or all), and a mastery check per skill. The mastery rule is adjustable, e.g. 80% for 3 sessions in a row with at least 5 problems.
 - **Data:** export CSV for notes, download/import a JSON backup, delete data
 
 The PIN only keeps settings away from the client. It isn't real security. All data lives in the browser's local storage on that device, so data from his phone and from your laptop stay separate. Use the backup export to move data between devices.

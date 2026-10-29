@@ -4,6 +4,7 @@ import {
   getSessionStart, moduleLabel, summarize, toCSV, type Skill, type Trial,
 } from '../lib/log';
 import { CHANGE_LEVELS, PRICE_LEVELS, type ChangeLevel, type PriceLevel } from '../lib/problems';
+import { ProgressTab } from './ProgressTab';
 import { DEFAULT_SETTINGS, useSettings, type HelpLevel, type PayWith, type Settings } from '../lib/settings';
 
 export function ClinicianGate({ onClose }: { onClose: () => void }) {
@@ -71,7 +72,9 @@ function PinForm({ label, submitLabel, onSubmit }: { label: string; submitLabel:
   );
 }
 
-type Tab = 'settings' | 'session' | 'data';
+type Tab = 'settings' | 'session' | 'progress' | 'data';
+
+const TAB_LABELS: Record<Tab, string> = { settings: 'Settings', session: 'This session', progress: 'Progress', data: 'Data' };
 
 function ClinicianPanel({ onClose }: { onClose: () => void }) {
   const [tab, setTab] = useState<Tab>('settings');
@@ -80,9 +83,9 @@ function ClinicianPanel({ onClose }: { onClose: () => void }) {
       <header className="panel-head">
         <h2>Clinician</h2>
         <nav className="panel-tabs">
-          {(['settings', 'session', 'data'] as Tab[]).map((t) => (
+          {(Object.keys(TAB_LABELS) as Tab[]).map((t) => (
             <button key={t} aria-pressed={tab === t} onClick={() => setTab(t)}>
-              {t === 'settings' ? 'Settings' : t === 'session' ? 'This session' : 'Data'}
+              {TAB_LABELS[t]}
             </button>
           ))}
         </nav>
@@ -93,6 +96,7 @@ function ClinicianPanel({ onClose }: { onClose: () => void }) {
       <div className="panel-body">
         {tab === 'settings' && <SettingsTab />}
         {tab === 'session' && <SessionTab />}
+        {tab === 'progress' && <ProgressTab />}
         {tab === 'data' && <DataTab />}
       </div>
     </div>
@@ -200,6 +204,19 @@ function SettingsTab() {
             </Field>
           </>
         )}
+        <Field label="Tip at Grapplebee's" hint="Tips are figured on the food total before tax.">
+          <Select
+            label="Tip mode"
+            value={s.tipMode}
+            options={[['choose', 'He picks 15%, 18% or 20% (amounts shown)'], ['calculate', 'He works out the tip himself']]}
+            onChange={set('tipMode')}
+          />
+        </Field>
+        {s.tipMode === 'calculate' && (
+          <Field label="Tip percent">
+            <Select label="Tip percent" value={s.tipPct} options={[[20, '20% (10% doubled)'], [15, '15% (10% plus half)']]} onChange={set('tipPct')} />
+          </Field>
+        )}
         <Field label="Calculator" hint="Shows a phone-style calculator. Its use is recorded with each problem.">
           <Toggle label="Calculator" checked={s.calculator} onChange={set('calculator')} />
         </Field>
@@ -234,10 +251,18 @@ function SettingsTab() {
         <Field label="How often the cashier makes a mistake" hint="Check the Change only.">
           <Select label="Cashier mistake rate" value={s.wrongChangeRate} options={[[0, 'Never'], [0.25, '1 in 4'], [0.5, 'Half the time'], [0.75, '3 in 4']]} onChange={set('wrongChangeRate')} />
         </Field>
-        <Field label="Problems per set" hint="Quick Change, Check the Change and Saving Up.">
+        <Field label="Problems per set" hint="Quick Change, Check the Change, Saving Up, Can I Afford It? and Chaise Bank.">
           <Select label="Problems per set" value={s.setLength} options={[[5, '5'], [10, '10'], [15, '15'], [20, '20'], [0, 'No limit']]} onChange={set('setLength')} />
         </Field>
-        <Field label="Gift card for online stores" hint="If an order costs more, the card is bumped up to the next $25.">
+        <Field label="Budget" hint="He must keep his order within it, or put something back. In stores, the gift card becomes the budget. Free choice only (not with order cards).">
+          <Select
+            label="Budget"
+            value={s.budget}
+            options={[[0, 'Off'], [1000, '$10'], [1500, '$15'], [2000, '$20'], [2500, '$25'], [3000, '$30'], [-1, 'Different each order ($10–$30)']]}
+            onChange={set('budget')}
+          />
+        </Field>
+        <Field label="Gift card for online stores" hint="With budget off, an order that costs more bumps the card up to the next $25.">
           <Select label="Gift card amount" value={s.giftCard} options={[[2500, '$25'], [5000, '$50'], [7500, '$75'], [10000, '$100'], [20000, '$200']]} onChange={set('giftCard')} />
         </Field>
         <Field label="Wallet" hint="Used when he picks bills himself. Extra $20s are added if needed.">
@@ -276,6 +301,19 @@ function SettingsTab() {
         </Field>
         <Field label="Show a hint after a wrong answer">
           <Toggle label="Hint after wrong answer" checked={s.autoHintOnWrong} onChange={set('autoHintOnWrong')} />
+        </Field>
+      </section>
+
+      <section>
+        <h3>Mastery rule</h3>
+        <Field label="On his own at least">
+          <Select label="Mastery percent" value={s.masteryPct} options={[[70, '70%'], [80, '80%'], [90, '90%'], [100, '100%']]} onChange={set('masteryPct')} />
+        </Field>
+        <Field label="Sessions in a row">
+          <Select label="Mastery sessions" value={s.masterySessions} options={[[2, '2'], [3, '3'], [4, '4'], [5, '5']]} onChange={set('masterySessions')} />
+        </Field>
+        <Field label="Problems needed for a session to count" hint="Per skill. Short sessions don't count toward mastery.">
+          <Select label="Minimum problems" value={s.masteryMin} options={[[3, '3'], [5, '5'], [8, '8'], [10, '10']]} onChange={set('masteryMin')} />
         </Field>
       </section>
 

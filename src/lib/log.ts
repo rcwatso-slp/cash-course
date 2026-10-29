@@ -4,12 +4,17 @@ import { readJSON, removeKey, writeJSON } from './storage';
 
 // Restaurants and stores log under their own id (mcdoogles, chipoodle, falmart...).
 export type ModuleId = string;
-export type Skill = 'subtotal' | 'tax' | 'total' | 'pay' | 'change' | 'checkChange' | 'shipping' | 'left' | 'moreNeeded' | 'weeks';
+export type Skill =
+  | 'subtotal' | 'tax' | 'total' | 'pay' | 'change' | 'checkChange' | 'shipping' | 'left' | 'moreNeeded' | 'weeks'
+  | 'afford' | 'tip' | 'balance' | 'extraCost';
 
 const MODULE_LABELS: Record<string, string> = {
   quickChange: 'Quick Change',
   checkChange: 'Check the Change',
   savings: 'Saving Up',
+  afford: 'Can I Afford It?',
+  bank: 'Chaise Bank',
+  doordosh: 'DoorDosh',
   ...Object.fromEntries([...RESTAURANTS, ...STORES].map((x) => [x.id, x.name])),
 };
 
@@ -26,6 +31,10 @@ export const SKILL_LABELS: Record<Skill, string> = {
   left: 'Money left on card',
   moreNeeded: 'How much more to save',
   weeks: 'Weeks to save',
+  afford: 'Enough money?',
+  tip: 'Figure the tip',
+  balance: 'New bank balance',
+  extraCost: 'Extra cost of delivery',
 };
 
 export interface Trial {

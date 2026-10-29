@@ -25,6 +25,13 @@ export interface Settings {
   setLength: number; // problems per set in drills, 0 = no limit
   wallet: Wallet;
   giftCard: number; // online stores: gift card balance in cents
+  budget: number; // cents he has to spend; 0 = off, -1 = random $10–$30 each order
+  tipMode: 'choose' | 'calculate';
+  tipPct: number;
+
+  masteryPct: number;
+  masterySessions: number;
+  masteryMin: number; // problems of a skill needed for a session to count
 
   maxHelp: HelpLevel;
   startHelp: HelpLevel;
@@ -56,6 +63,13 @@ export const DEFAULT_SETTINGS: Settings = {
   setLength: 10,
   wallet: { 100: 5, 500: 1, 1000: 1, 2000: 1 },
   giftCard: 5000,
+  budget: 0,
+  tipMode: 'choose',
+  tipPct: 20,
+
+  masteryPct: 80,
+  masterySessions: 3,
+  masteryMin: 5,
 
   maxHelp: 3,
   startHelp: 0,

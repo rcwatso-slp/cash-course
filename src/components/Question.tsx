@@ -32,7 +32,14 @@ interface BaseProps {
 
 type Props = BaseProps &
   (
-    | { kind: 'money'; answer: Cents; inputLabel?: string }
+    | {
+        kind: 'money';
+        answer: Cents;
+        inputLabel?: string;
+        /** Accept answers this many cents off (rounding). His own answer is what counts. */
+        tolerance?: Cents;
+        onCorrect?: (cents: Cents) => void;
+      }
     | { kind: 'number'; answer: number; inputLabel: string; unit: string }
     | { kind: 'yesno'; answer: boolean; yesLabel?: string; noLabel?: string }
     | {
@@ -128,7 +135,9 @@ export function Question(props: Props) {
       setFeedback({ tone: 'info', msg });
       return;
     }
-    grade(r.cents === props.answer);
+    const ok = Math.abs(r.cents - props.answer) <= (props.tolerance ?? 0);
+    if (ok) props.onCorrect?.(r.cents);
+    grade(ok, undefined, ok && props.tolerance ? formatMoney(r.cents) : undefined);
   }
 
   function submitCustom(value: unknown) {

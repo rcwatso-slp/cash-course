@@ -213,7 +213,10 @@ function StoreSession({ store, onShopAgain }: { store: StoreData; onShopAgain: (
             cart={cart}
             level={cfg.level}
             orderNumber={cfg.orderNumber}
-            onBackToCart={() => go({ name: 'cart' })}
+            onBackToCart={(message) => {
+              go({ name: 'cart' });
+              if (message) setNotice(message);
+            }}
             onShopAgain={onShopAgain}
           />
         )}
@@ -281,7 +284,9 @@ function Browse({
       </div>
       {deals.length > 0 && (
         <>
-          <h2 className="browse-title">{store.skin === 'falmart' ? 'Fallback deals' : store.skin === 'amazoom' ? "Today's deals" : 'On sale'}</h2>
+          <h2 className="browse-title">
+            {store.skin === 'falmart' ? 'Fallback deals' : store.skin === 'amazoom' ? "Today's deals" : store.skin === 'bassbro' ? 'Deer season deals' : 'On sale'}
+          </h2>
           {grid(deals)}
         </>
       )}

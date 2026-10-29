@@ -1579,6 +1579,33 @@ html[data-contrast='high'] .board-section h3 {
   opacity: 0.8;
 }
 
+.budget-banner {
+  padding: 0.6rem 0.9rem;
+  margin-bottom: 0.75rem;
+  border-radius: 10px;
+  background: var(--good-soft);
+  border: 1px solid var(--good);
+  color: var(--text);
+  font-size: 1.05rem;
+}
+
+.tip-choices {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+
+.tip-choice {
+  flex-direction: column;
+  min-height: 5rem;
+  font-size: 1.1rem;
+  border-radius: 12px;
+}
+
+.tip-choice b {
+  font-size: 1.4rem;
+}
+
 /* ---------- Online stores ---------- */
 .store {
   --store-head: #131921;
@@ -1617,6 +1644,23 @@ html[data-contrast='high'] .board-section h3 {
   --store-checkout-text: #fff;
   --store-link: #006cb7;
   --store-sale: #e3000b;
+}
+
+.store.skin-bassbro {
+  --store-head: #4b5320;
+  --store-nav: #3a3f19;
+  --store-accent: #ff6a13;
+  --store-add: #ff6a13;
+  --store-add-text: #1d1d1b;
+  --store-checkout: #ff6a13;
+  --store-checkout-text: #1d1d1b;
+  --store-link: #2f6b2f;
+  --store-sale: #c0392b;
+}
+
+.skin-bassbro .store-logo {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .store-header {
@@ -2263,6 +2307,306 @@ html[data-contrast='high'] .board-section h3 {
 .progress-fill {
   height: 100%;
   background: var(--good);
+}
+
+/* ---------- Can I afford it / bank / DoorDosh ---------- */
+.afford-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.afford-item {
+  display: grid;
+  grid-template-columns: 2.5rem 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.afford-emoji {
+  font-size: 1.8rem;
+}
+
+.afford-price {
+  font-size: 1.2rem;
+}
+
+.bank-header {
+  margin-bottom: 0.75rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: #0b3d91;
+  color: #fff;
+}
+
+.bank-brand {
+  padding: 0.6rem 1rem;
+  font-weight: 800;
+  font-size: 1.3rem;
+  background: #072c69;
+}
+
+.bank-account {
+  display: flex;
+  flex-direction: column;
+  padding: 0.85rem 1rem 1rem;
+}
+
+.bank-balance-label {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+.bank-balance {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.bank-pending {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem 0.9rem;
+  margin-bottom: 0.75rem;
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+}
+
+.bank-pending-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.bank-pending-row,
+.bank-history li {
+  display: grid;
+  grid-template-columns: 2rem 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bank-tx-amount {
+  font-weight: 700;
+}
+
+.bank-tx-amount.deposit {
+  color: var(--good);
+}
+
+.bank-history {
+  max-width: 760px;
+  margin-top: 1.25rem;
+}
+
+.bank-history h2 {
+  font-size: 1rem;
+}
+
+.bank-history ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.bank-history li {
+  grid-template-columns: 2rem 1fr auto 6.5rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--surface-2);
+}
+
+.bank-history li:last-child {
+  border-bottom: 0;
+}
+
+.bank-history li.declined {
+  color: var(--text-muted);
+}
+
+.bank-history li.declined .bank-tx-amount {
+  text-decoration: line-through;
+}
+
+.bank-tx-balance {
+  text-align: right;
+  color: var(--text-muted);
+}
+
+.dosh {
+  --brand: #eb1700;
+  --brand-accent: #eb1700;
+  --brand-accent-text: #fff;
+}
+
+.dosh-brand {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  padding: 0.6rem 1rem;
+  margin-bottom: 0.75rem;
+  border-radius: var(--radius);
+  background: #eb1700;
+  color: #fff;
+}
+
+.dosh-logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.dosh-restaurants {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.dosh-restaurant {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  padding: 0.75rem;
+  text-align: left;
+  border-radius: var(--radius);
+}
+
+.dosh-rest-img {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 5rem;
+  border-radius: 8px;
+  font-size: 2.5rem;
+}
+
+.dosh-note {
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  background: #fdecea;
+  color: #8a1c0f;
+}
+
+/* ---------- Progress chart ---------- */
+:root {
+  --chart-bar: #11866a;
+}
+
+.chart-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0.75rem 0;
+}
+
+.chart-filters button {
+  min-height: 2.25rem;
+  font-size: 0.85rem;
+  border-radius: 999px;
+}
+
+.chart-filters button[aria-pressed='true'] {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+.chart-wrap {
+  position: relative;
+  max-width: 760px;
+  padding: 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.chart-grid {
+  stroke: var(--surface-2);
+  stroke-width: 1;
+}
+
+.chart-goal {
+  stroke: var(--text-muted);
+  stroke-width: 1;
+}
+
+.chart-goal-label,
+.chart-tick {
+  fill: var(--text-muted);
+  font-size: 12px;
+}
+
+.chart-value {
+  fill: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.chart-bar {
+  fill: var(--chart-bar);
+}
+
+.chart-bar.active {
+  fill: #0b6b54;
+}
+
+.chart-col {
+  cursor: default;
+  outline: none;
+}
+
+.chart-col:focus-visible .chart-bar {
+  stroke: var(--text);
+  stroke-width: 2;
+}
+
+.chart-tooltip {
+  position: absolute;
+  top: 0.25rem;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  padding: 0.4rem 0.6rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.chart-tooltip span {
+  color: var(--text-muted);
+}
+
+.chart-table {
+  margin: 0.5rem 0 1.5rem;
+}
+
+.chart-table summary {
+  cursor: pointer;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.mastery-yes {
+  color: var(--good);
+  font-weight: 700;
 }
 
 /* ---------- Phone layout ---------- */

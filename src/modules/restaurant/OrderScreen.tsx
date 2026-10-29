@@ -10,6 +10,12 @@ interface Props {
   restaurant: Restaurant;
   level: PriceLevel;
   task: TaskLine[] | null;
+  /** How much he has to spend (0 = no budget) */
+  budget?: Cents;
+  /** Shown at the top when he comes back to change the order */
+  message?: string | null;
+  /** Delivery apps mark prices up */
+  adjust?: (c: Cents) => Cents;
   lines: Line[];
   setLines: (fn: (prev: Line[]) => Line[]) => void;
   showRunningTotal: boolean;
@@ -17,15 +23,15 @@ interface Props {
   onDone: () => void;
 }
 
-export function OrderScreen({ restaurant, level, task, lines, setLines, showRunningTotal, menuStyle, onDone }: Props) {
+export function OrderScreen({ restaurant, level, task, budget = 0, message = null, adjust, lines, setLines, showRunningTotal, menuStyle, onDone }: Props) {
   const [category, setCategory] = useState(restaurant.categories[0].id);
   const [picking, setPicking] = useState<MenuItem | null>(null);
-  const [notice, setNotice] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(message);
   const [cartOpen, setCartOpen] = useState(false);
 
   const maxItems = task ? Math.max(task.length, PRICE_LEVELS[level].maxItems) : PRICE_LEVELS[level].maxItems;
   const count = sum(lines.map((l) => l.qty));
-  const price = (c: Cents) => levelPrice(c, level);
+  const price = (c: Cents) => levelPrice(adjust ? adjust(c) : c, level);
 
   function add(item: MenuItem, size: Size | undefined, chosen: Chosen) {
     setPicking(null);
@@ -33,7 +39,7 @@ export function OrderScreen({ restaurant, level, task, lines, setLines, showRunn
       setNotice(`That's the most for this order (${maxItems} items). Remove something to add something else.`);
       return;
     }
-    const line = buildLine(item, size, chosen, level);
+    const line = buildLine(item, size, chosen, level, adjust);
     setLines((prev) => addLine(prev, line));
     setNotice(`Added: ${line.name}${line.extras.length ? ` with ${line.extras.map((e) => e.label).join(', ')}` : ''}`);
   }
@@ -72,6 +78,12 @@ export function OrderScreen({ restaurant, level, task, lines, setLines, showRunn
               );
             })}
           </ul>
+        </div>
+      )}
+
+      {budget > 0 && (
+        <div className="budget-banner">
+          💵 You have <b>{formatMoney(budget)}</b> to spend{restaurant.tableService ? ', including the tip' : ''}.
         </div>
       )}
 

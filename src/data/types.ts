@@ -51,6 +51,8 @@ export interface Restaurant {
   blurb: string;
   categories: { id: string; label: string }[];
   menu: MenuItem[];
+  /** Sit-down restaurant: a server brings the check and you leave a tip */
+  tableService?: boolean;
 }
 
 // ---------- Online stores ----------
@@ -96,7 +98,7 @@ export interface Store {
   id: string;
   name: string;
   tagline: string;
-  skin: 'falmart' | 'amazoom' | 'leggo';
+  skin: 'falmart' | 'amazoom' | 'leggo' | 'bassbro';
   logo: string;
   blurb: string;
   searchPlaceholder: string;

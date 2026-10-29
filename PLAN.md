@@ -242,7 +242,7 @@ src/
 - Taco Smell, Chipoodle, Domin-Oops and Starducks, plus the menu board format
 - Saving-up goal (LEGGO set)
 
-**Phase 3: Budgeting**
+**Phase 3: Budgeting** ✅ Built (October 2026)
 - Budget mode, the yes/no affordability game, Chaise Bank debit balance
 - Bass Bro Shops, Grapplebee's (tip) and DoorDosh (fees)
 - Progress charts, mastery rule, CSV export

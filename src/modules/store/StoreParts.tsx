@@ -41,7 +41,7 @@ export function PriceTag({ store, price, wasPrice, size = 'normal' }: { store: S
   return (
     <span className={`price price-${store.skin} price-${size}`}>
       {wasPrice && store.skin === 'falmart' && <span className="badge-sale">Fallback</span>}
-      {wasPrice && store.skin === 'leggo' && <span className="badge-sale">Sale</span>}
+      {wasPrice && (store.skin === 'leggo' || store.skin === 'bassbro') && <span className="badge-sale">Sale</span>}
       <span className="price-main">
         {wasPrice && store.skin === 'falmart' ? 'Now ' : ''}
         {formatMoney(price)}

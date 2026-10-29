@@ -5,7 +5,10 @@ import { getSessionStart } from './lib/log';
 import { SettingsProvider, useSettings } from './lib/settings';
 import { RESTAURANTS } from './data/restaurants';
 import { STORES } from './data/stores';
+import AffordIt from './modules/AffordIt';
+import ChaiseBank from './modules/ChaiseBank';
 import CheckChange from './modules/CheckChange';
+import DoorDosh from './modules/DoorDosh';
 import Home from './modules/Home';
 import QuickChange from './modules/QuickChange';
 import Restaurant from './modules/restaurant/Restaurant';
@@ -30,6 +33,9 @@ const DRILLS: Record<string, () => JSX.Element> = {
   'quick-change': QuickChange,
   'check-change': CheckChange,
   'saving-up': SavingUp,
+  'afford-it': AffordIt,
+  'chaise-bank': ChaiseBank,
+  doordosh: DoorDosh,
 };
 
 /** #/mcdoogles, #/falmart, #/quick-change ... or null for Home. */

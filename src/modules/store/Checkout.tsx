@@ -4,7 +4,7 @@ import { calcTax, formatMoney, sum, type Cents } from '../../lib/money';
 import type { PriceLevel } from '../../lib/problems';
 import { arrivalDate, cartUnits, findProduct, giftCardFor, shippingCost, shopPrice, type CartLine } from '../../lib/shop';
 import { useSettings } from '../../lib/settings';
-import { addPartsHelps, addUpHelps, changeHelps, taxHelps, type PricedItem } from '../../components/helps';
+import { addPartsHelps, addUpHelps, affordHelps, changeHelps, taxHelps, type PricedItem } from '../../components/helps';
 import { Question, type Help } from '../../components/Question';
 import { Receipt } from '../../components/Receipt';
 import { StepBar } from '../../components/StepBar';
@@ -12,22 +12,29 @@ import { Totals } from '../../components/Totals';
 
 export const CHECKOUT_STEPS = ['Cart', 'Subtotal', 'Delivery', 'Total', 'Pay', 'Done'];
 
-type Step = 'subtotal' | 'delivery' | 'shipping' | 'tax' | 'total' | 'left' | 'review' | 'done';
+type Step = 'subtotal' | 'delivery' | 'shipping' | 'tax' | 'total' | 'budget' | 'left' | 'review' | 'done';
 
-const STEP_INDEX: Record<Step, number> = { subtotal: 1, delivery: 2, shipping: 2, tax: 3, total: 3, left: 4, review: 4, done: 5 };
+const STEP_INDEX: Record<Step, number> = { subtotal: 1, delivery: 2, shipping: 2, tax: 3, total: 3, budget: 4, left: 4, review: 4, done: 5 };
 
 interface Props {
   store: Store;
   cart: CartLine[];
   level: PriceLevel;
   orderNumber: number;
-  onBackToCart: () => void;
+  onBackToCart: (message?: string) => void;
   onShopAgain: () => void;
 }
 
 export function Checkout({ store, cart, level, orderNumber, onBackToCart, onShopAgain }: Props) {
   const { settings } = useSettings();
-  const [cfg] = useState(() => ({ taxOn: settings.taxOn, taxRate: settings.taxRate, taxMode: settings.taxMode, giftCard: settings.giftCard }));
+  const [cfg] = useState(() => ({
+    taxOn: settings.taxOn,
+    taxRate: settings.taxRate,
+    taxMode: settings.taxMode,
+    giftCard: settings.giftCard,
+    // Budget mode: the gift card is all he has, so the order has to fit on it.
+    strictCard: settings.budget !== 0 && settings.orderMode !== 'task',
+  }));
   const [step, setStep] = useState<Step>('subtotal');
   const [delivery, setDelivery] = useState<DeliveryOption | null>(null);
 
@@ -36,7 +43,8 @@ export function Checkout({ store, cart, level, orderNumber, onBackToCart, onShop
   const shipping = delivery ? shippingCost(delivery, subtotal) : 0;
   const tax = cfg.taxOn ? calcTax(subtotal, cfg.taxRate) : 0;
   const total = subtotal + shipping + tax;
-  const card = giftCardFor(total, cfg.giftCard);
+  const card = cfg.strictCard ? cfg.giftCard : giftCardFor(total, cfg.giftCard);
+  const afterTotal = (): Step => (cfg.strictCard ? 'budget' : 'left');
   const common = { module: store.id, level: `L${level}${cfg.taxOn ? ` + tax ${cfg.taxRate}%` : ''}` };
 
   const parts: PricedItem[] = [
@@ -97,7 +105,7 @@ export function Checkout({ store, cart, level, orderNumber, onBackToCart, onShop
               </button>
             ))}
           </div>
-          <button className="link-btn" onClick={onBackToCart}>
+          <button className="link-btn" onClick={() => onBackToCart()}>
             ← Back to {store.cartName.toLowerCase()}
           </button>
         </section>
@@ -126,7 +134,7 @@ export function Checkout({ store, cart, level, orderNumber, onBackToCart, onShop
           say={`${delivery.label}. ${delivery.detail}. Your subtotal is ${formatMoney(subtotal)}. Is your shipping free?`}
           logText={`Is ${formatMoney(subtotal)} at least ${formatMoney(delivery.freeOver!)}?`}
           helps={freeShippingHelps(subtotal, delivery)}
-          onNext={() => setStep(needsTotalQuestion(delivery) ? afterShipping() : 'left')}
+          onNext={() => setStep(needsTotalQuestion(delivery) ? afterShipping() : afterTotal())}
         />
       )}
 
@@ -154,7 +162,7 @@ export function Checkout({ store, cart, level, orderNumber, onBackToCart, onShop
         />
       )}
 
-      {step === 'total' && !needsTotalQuestion(delivery) && <SkipTotal onNext={() => setStep('left')} total={total} />}
+      {step === 'total' && !needsTotalQuestion(delivery) && <SkipTotal onNext={() => setStep(afterTotal())} total={total} />}
 
       {step === 'total' && needsTotalQuestion(delivery) && (
         <Question
@@ -181,7 +189,47 @@ export function Checkout({ store, cart, level, orderNumber, onBackToCart, onShop
           say={`Subtotal ${formatMoney(subtotal)}. Shipping ${shipping === 0 ? 'free' : formatMoney(shipping)}.${cfg.taxOn ? ` Tax ${formatMoney(tax)}.` : ''} What is your order total?`}
           logText={parts.map((p) => `${p.name} ${formatMoney(p.cents)}`).join(' + ')}
           helps={addPartsHelps(parts)}
-          onNext={() => setStep('left')}
+          onNext={() => setStep(afterTotal())}
+        />
+      )}
+
+      {step === 'budget' && (
+        <Question
+          key="budget"
+          {...common}
+          skill="afford"
+          kind="yesno"
+          yesLabel="Yes, there's enough"
+          noLabel="No, it's too much"
+          answer={total <= card}
+          answerLabel={total <= card ? "There's enough on the card" : "There isn't enough on the card"}
+          prompt={
+            <>
+              <div className="gift-card" aria-label={`Gift card with ${formatMoney(card)}`}>
+                <span className="gift-card-name">🎁 {store.name} Gift Card</span>
+                <span className="gift-card-balance">Balance: {formatMoney(card)}</span>
+              </div>
+              <p className="q-text">
+                Your order total is <b>{formatMoney(total)}</b>. Is there enough on your gift card?
+              </p>
+            </>
+          }
+          say={`Your gift card has ${formatMoney(card)}. Your order total is ${formatMoney(total)}. Is there enough on your gift card?`}
+          logText={`Card ${formatMoney(card)}, total ${formatMoney(total)}`}
+          helps={affordHelps(card, [total])}
+          solvedExtra={
+            total > card && (
+              <p className="say-this">
+                You're {formatMoney(total - card)} over. Take something out of your {store.cartName.toLowerCase()}.
+              </p>
+            )
+          }
+          nextLabel={total <= card ? 'Next' : `Back to ${store.cartName.toLowerCase()}`}
+          onNext={() =>
+            total <= card
+              ? setStep('left')
+              : onBackToCart(`Your order is ${formatMoney(total - card)} more than your ${formatMoney(card)} gift card. Take something out, then check out again.`)
+          }
         />
       )}
 
