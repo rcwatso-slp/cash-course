@@ -1,7 +1,7 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import {
   SKILL_LABELS, clearTrials, getTrials, percent, replaceTrials, sessionTrials, startNewSession,
-  moduleLabel, summarize, toCSV, type Skill, type Trial,
+  getSessionStart, moduleLabel, summarize, toCSV, type Skill, type Trial,
 } from '../lib/log';
 import { CHANGE_LEVELS, PRICE_LEVELS, type ChangeLevel, type PriceLevel } from '../lib/problems';
 import { DEFAULT_SETTINGS, useSettings, type HelpLevel, type PayWith, type Settings } from '../lib/settings';
@@ -348,28 +348,42 @@ function SummaryCards({ trials }: { trials: Trial[] }) {
   );
 }
 
+const timeOf = (ms: number) => new Date(ms).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+
 function SessionTab() {
   const { settings } = useSettings();
-  const [, refresh] = useState(0);
+  const [started, setStarted] = useState<number | null>(null);
+  const start = getSessionStart();
   const trials = sessionTrials(settings.nickname);
   const skills = [...new Set(trials.map((t) => t.skill))] as Skill[];
 
   return (
     <div className="session">
       <div className="session-head">
-        <p>
-          Showing today's session{settings.nickname ? ` for ${settings.nickname}` : ''}. "On his own" means right on the first try with no help.
-        </p>
+        <div>
+          <p className="session-start">
+            This session started <b>today at {timeOf(start)}</b>
+            {settings.nickname ? ` for ${settings.nickname}` : ''}.
+          </p>
+          <p className="muted">"On his own" means right on the first try with no help.</p>
+        </div>
         <button
           className="button"
           onClick={() => {
             startNewSession();
-            refresh((x) => x + 1);
+            setStarted(getSessionStart());
           }}
         >
           Start a new session
         </button>
       </div>
+
+      {started && (
+        <p className="feedback good" role="status">
+          ✓ New session started at {timeOf(started)}. The numbers below start over from here. Earlier problems are still saved and can
+          be exported from the Data tab.
+        </p>
+      )}
 
       {trials.length === 0 ? (
         <p className="muted">No problems yet this session.</p>

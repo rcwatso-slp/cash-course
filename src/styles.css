@@ -1317,10 +1317,17 @@ button:disabled {
   margin-bottom: 1rem;
 }
 
-.session-head p {
-  margin: 0;
+.session-head > div {
   flex: 1;
   min-width: 240px;
+}
+
+.session-head p {
+  margin: 0 0 0.25rem;
+}
+
+.session .feedback {
+  margin: 0 0 1rem;
 }
 
 .summary-cards {
