@@ -14,6 +14,7 @@ describe('levelPrice', () => {
     expect(levelPrice(349, 2)).toBe(350);
     expect(levelPrice(189, 2)).toBe(200);
     expect(levelPrice(189, 3)).toBe(189);
+    expect(levelPrice(0, 1)).toBe(0);
   });
 });
 

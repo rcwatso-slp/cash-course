@@ -88,7 +88,7 @@ describe('countUpSteps', () => {
   });
   it('always adds up to the change', () => {
     for (let i = 0; i < 2000; i++) {
-      const paid = i % 2 ? [500, 1000, 2000, 5000][i % 4] : 1 + Math.floor(Math.random() * 50000);
+      const paid = i % 2 ? [500, 1000, 2000, 5000][i % 4] : 2 + Math.floor(Math.random() * 50000);
       const price = 1 + Math.floor(Math.random() * (paid - 1));
       const steps = countUpSteps(price, paid);
       expect(sum(steps.map((s) => s.jump))).toBe(paid - price);

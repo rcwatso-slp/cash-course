@@ -20,6 +20,7 @@ export const CHANGE_LEVELS: Record<ChangeLevel, string> = {
 
 /** Simplify a real menu price to match the difficulty level. */
 export function levelPrice(cents: Cents, level: PriceLevel): Cents {
+  if (cents === 0) return 0; // free stays free (water at Grapplebee's)
   if (level === 1) return Math.max(100, Math.round(cents / 100) * 100);
   if (level === 2) return Math.max(25, Math.round(cents / 25) * 25);
   return cents;
