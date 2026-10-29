@@ -5,10 +5,13 @@ import { useSettings } from '../lib/settings';
 
 const SKILLS = [
   { href: '#/quick-change', emoji: '💵', title: 'Quick Change', desc: 'How much change should you get back?' },
-  { href: '#/check-change', emoji: '🧾', title: 'Check the Change', desc: 'The cashier hands you change. Is it right?' },
+  { href: '#/check-change', emoji: '🪙', title: 'Check the Change', desc: 'The cashier hands you change. Is it right?' },
   { href: '#/saving-up', emoji: '🐷', title: 'Saving Up', desc: 'How much more do you need? How many weeks?' },
   { href: '#/afford-it', emoji: '🤔', title: 'Can I Afford It?', desc: 'You have $10. Can you buy it? Quick yes or no.' },
   { href: '#/chaise-bank', emoji: '🪑', title: 'Chaise Bank', desc: 'Use your debit card and keep track of your balance.' },
+  { href: '#/better-deal', emoji: '🏷️', title: 'Better Deal?', desc: 'Sales, 2-for-1s and "3 for $10". Which costs less?' },
+  { href: '#/read-receipt', emoji: '🧾', title: 'Read the Receipt', desc: 'Find the total, tax and change. Spot mistakes.' },
+  { href: '#/spot-the-scam', emoji: '🚩', title: 'Spot the Scam', desc: 'Texts, emails and pop-ups. Real or scam?' },
 ];
 
 const STORE_COLORS: Record<string, string> = { falmart: '#0071dc', amazoom: '#232f3e', leggo: '#e3000b', bassbro: '#4b5320' };

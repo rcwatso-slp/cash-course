@@ -17,6 +17,9 @@ See [PLAN.md](PLAN.md) for the full roadmap.
 | | **Saving Up** | Pick a goal (LEGGO Star Warz sets, trail camera, deer license…): "How much more do you need?" and "How many weeks?" |
 | | **Can I Afford It?** | "You have $10. It costs $11.29. Can you buy it?" Quick yes/no, then how much is left or how much more he'd need |
 | | **Chaise Bank** | A debit account: purchases and deposits, "What's your balance now?", and cards declined when there isn't enough |
+| | **Better Deal?** | Two stores, one item: $ off, buy-one-get-one, "3 for $10" (sometimes a trap), % off. Pick the better deal, then "How much do you save?" |
+| | **Read the Receipt** | Find a price, the tax, the total, the change, or count the items. At higher levels, check the receipt against the bag for a planted mistake |
+| | **Spot the Scam** | Texts, emails, DMs and pop-ups: real or scam? Afterward it shows the red flags and what to do |
 
 **Budget mode** (clinician setting): "You have $15 to spend." After the total, he answers "Do you have enough?" If not, he goes back and puts something back. In stores, the gift card becomes the budget.
 
@@ -35,10 +38,14 @@ Click **🔒 Clinician** at the bottom-left of any page. The first time, you'll 
 - **Help:** how many help levels, start with help showing (errorless), wait before help unlocks, hint after a wrong answer
 - **Calculator:** phone-style calculator on/off. Its use is recorded.
 - **Display:** read-aloud buttons, large text, high contrast
+- **Say your order** (restaurants): after ordering, he practices saying it: "Hi, can I get a Grande Caffè Latte with oat milk, please?"
+- **Scam pop-ups** (stores): once per visit, a fake pop-up appears. Closing it is right, and it's logged either way.
 - **Budget and tips:** budget off, a fixed amount, or different each order; tip mode at Grapplebee's (pick 15/18/20%, or work out 15% or 20%)
 - **This session:** today's results, the share done independently, results by skill, and every problem
 - **Progress:** a chart of the share done independently each day (by skill or all), and a mastery check per skill. The mastery rule is adjustable, e.g. 80% for 3 sessions in a row with at least 5 problems.
-- **Data:** export CSV for notes, download/import a JSON backup, delete data
+- **Homework:** printable worksheets (menu math, make change, can I afford it, better deal) with an answer key on a separate page
+- **Prices:** change any price or name to match your area. Saved on that device; the backup in Data carries them to another device.
+- **Data:** export CSV for notes, download/import a JSON backup (includes price edits), delete data
 
 The PIN only keeps settings away from the client. It isn't real security. All data lives in the browser's local storage on that device, so data from his phone and from your laptop stay separate. Use the backup export to move data between devices.
 
@@ -50,7 +57,7 @@ The PIN only keeps settings away from the client. It isn't real security. All da
 - Store products: [src/data/stores/](src/data/stores/). LEGGO and Star Warz items are shared in `toys.ts`, and each store sets its own price.
 - Saving Up goals: the top of [src/modules/SavingUp.tsx](src/modules/SavingUp.tsx)
 
-Prices are in cents (`599` = $5.99). Change names or prices, then commit and push, and the site updates in a minute or two.
+Prices are in cents (`599` = $5.99). Change names or prices, then commit and push, and the site updates in a minute or two. For quick changes on one device, use **Clinician → Prices** instead.
 
 ## Running it on your computer
 
@@ -76,3 +83,5 @@ npm test
 4. The workflow in `.github/workflows/deploy.yml` runs the tests, builds and publishes. The site will be at `https://<your-username>.github.io/<repo-name>/`.
 
 On his phone, open the site and use **Share → Add to Home Screen** (iPhone) or **⋮ → Add to Home screen** (Android) so it opens like an app.
+
+**Offline:** after the site has been opened once with internet, it keeps working without Wi-Fi. When you're online again it picks up updates (sometimes it takes a second reload).

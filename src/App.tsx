@@ -6,14 +6,18 @@ import { SettingsProvider, useSettings } from './lib/settings';
 import { RESTAURANTS } from './data/restaurants';
 import { STORES } from './data/stores';
 import AffordIt from './modules/AffordIt';
+import BetterDeal from './modules/BetterDeal';
 import ChaiseBank from './modules/ChaiseBank';
 import CheckChange from './modules/CheckChange';
 import DoorDosh from './modules/DoorDosh';
 import Home from './modules/Home';
 import QuickChange from './modules/QuickChange';
+import ReadReceipt from './modules/ReadReceipt';
 import Restaurant from './modules/restaurant/Restaurant';
 import SavingUp from './modules/SavingUp';
+import ScamCheck from './modules/ScamCheck';
 import Store from './modules/store/Store';
+import WorksheetPage from './modules/WorksheetPage';
 
 // Hash routes (#/mcdoogles) work on GitHub Pages without server configuration.
 function useRoute(): string {
@@ -36,6 +40,10 @@ const DRILLS: Record<string, () => JSX.Element> = {
   'afford-it': AffordIt,
   'chaise-bank': ChaiseBank,
   doordosh: DoorDosh,
+  'better-deal': BetterDeal,
+  'read-receipt': ReadReceipt,
+  'spot-the-scam': ScamCheck,
+  worksheet: WorksheetPage,
 };
 
 /** #/mcdoogles, #/falmart, #/quick-change ... or null for Home. */

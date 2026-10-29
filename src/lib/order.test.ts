@@ -3,7 +3,7 @@ import { CHIPOODLE } from '../data/restaurants/chipoodle';
 import { DOMIN_OOPS } from '../data/restaurants/dominoops';
 import { RESTAURANTS } from '../data/restaurants';
 import { STARDUCKS } from '../data/restaurants/starducks';
-import { addLine, buildLine, defaultChosen, lineEach, makeTask, matchesTask, orderUnits, removeOne } from './order';
+import { addLine, buildLine, defaultChosen, lineEach, makeTask, matchesTask, orderScript, orderUnits, removeOne } from './order';
 import { sum } from './money';
 
 const item = (r: typeof CHIPOODLE, id: string) => r.menu.find((m) => m.id === id)!;
@@ -94,5 +94,16 @@ describe('order cards', () => {
         expect(matchesTask(lines, task)).toBe(true);
       }
     }
+  });
+});
+
+describe('orderScript', () => {
+  const line = (name: string, qty = 1, extras: { label: string; price: number }[] = []) => ({ key: name, name, emoji: '', price: 100, qty, extras, details: [] });
+  it('lists items naturally', () => {
+    expect(orderScript([line('Big Snack Meal')])).toBe('Hi, can I get a Big Snack Meal, please?');
+    expect(orderScript([line('Apple Slices'), line('Cheesy Burger', 2)])).toBe('Hi, can I get an order of Apple Slices and two Cheesy Burgers, please?');
+    expect(orderScript([line('Iced Coffee'), line('Egg Bites (2)')])).toBe('Hi, can I get an Iced Coffee and an order of Egg Bites (2), please?');
+    expect(orderScript([line('Cookies (3)', 2)])).toBe('Hi, can I get two orders of Cookies (3), please?');
+    expect(orderScript([line('Grande Caffè Latte', 1, [{ label: 'Oat milk', price: 70 }])], true)).toBe("Hi, I'd like a Grande Caffè Latte with oat milk, please.");
   });
 });

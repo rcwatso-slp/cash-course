@@ -129,3 +129,22 @@ export function makeTask(menu: MenuItem[], level: PriceLevel): TaskLine[] {
 export function matchesTask(lines: Line[], task: TaskLine[]): boolean {
   return lines.length === task.length && task.every((t) => lines.some((l) => l.key === t.key && l.qty === 1));
 }
+
+const NUMBER_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six'];
+
+function spokenItem(l: Line): string {
+  const extras = l.extras.length ? ` with ${l.extras.map((e) => e.label.toLowerCase()).join(' and ')}` : '';
+  // "Apple Slices", "Boneless Wings", "Cookies (3)", "10 pc McNuggies" are already plural.
+  const pluralName = /(s|\))$/i.test(l.name) || /^\d/.test(l.name);
+  if (l.qty === 1) return pluralName ? `an order of ${l.name}${extras}` : `${/^[aeiou]/i.test(l.name) ? 'an' : 'a'} ${l.name}${extras}`;
+  // "two Cheesy Burgers"; names that don't pluralize cleanly become "two orders of ..."
+  const plural = /[a-rt-z]$/i.test(l.name) ? `${l.name}s` : null;
+  return `${NUMBER_WORDS[l.qty] ?? l.qty} ${plural ?? `orders of ${l.name}`}${extras}`;
+}
+
+/** What to say at the counter: "Hi, can I get a Big Snack Meal and two Cheesy Burgers, please?" */
+export function orderScript(lines: Line[], tableService = false): string {
+  const items = lines.map(spokenItem);
+  const list = items.length > 1 ? `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}` : items[0];
+  return tableService ? `Hi, I'd like ${list}, please.` : `Hi, can I get ${list}, please?`;
+}

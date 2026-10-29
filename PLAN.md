@@ -247,7 +247,7 @@ src/
 - Bass Bro Shops, Grapplebee's (tip) and DoorDosh (fees)
 - Progress charts, mastery rule, CSV export
 
-**Phase 4: Extras**
+**Phase 4: Extras** ✅ Built (October 2026)
 - Comparison shopping and sales, receipt reading, script practice, online safety
 - Print/homework mode, content editor, PWA offline, interest themes
 

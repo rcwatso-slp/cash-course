@@ -28,6 +28,8 @@ export interface Settings {
   budget: number; // cents he has to spend; 0 = off, -1 = random $10–$30 each order
   tipMode: 'choose' | 'calculate';
   tipPct: number;
+  sayOrder: boolean; // restaurants: practice saying the order at the counter
+  scamPopups: boolean; // stores: fake pop-ups now and then
 
   masteryPct: number;
   masterySessions: number;
@@ -66,6 +68,8 @@ export const DEFAULT_SETTINGS: Settings = {
   budget: 0,
   tipMode: 'choose',
   tipPct: 20,
+  sayOrder: false,
+  scamPopups: false,
 
   masteryPct: 80,
   masterySessions: 3,

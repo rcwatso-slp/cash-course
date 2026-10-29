@@ -126,7 +126,7 @@ export function addPartsHelps(parts: PricedItem[]): Helps {
   ];
 }
 
-export type Difference = 'change' | 'left' | 'more' | 'balance' | 'extra';
+export type Difference = 'change' | 'left' | 'more' | 'balance' | 'extra' | 'save';
 
 const DIFFERENCE_TEXT: Record<Difference, { hint: (from: string, to: string) => string; countUp: string }> = {
   change: {
@@ -144,6 +144,10 @@ const DIFFERENCE_TEXT: Record<Difference, { hint: (from: string, to: string) => 
   balance: {
     hint: (from, to) => `Your new balance is your old balance minus what you spent. Try counting up from ${from} to ${to}.`,
     countUp: 'Count up from what you spent to your old balance.',
+  },
+  save: {
+    hint: (from, to) => `What you save is the difference: the bigger cost minus the smaller one. Try counting up from ${from} to ${to}.`,
+    countUp: 'Count up from the cheaper price to the more expensive one.',
   },
   extra: {
     hint: (from, to) => `The extra cost is the DoorDosh total minus the pickup price. Try counting up from ${from} to ${to}.`,

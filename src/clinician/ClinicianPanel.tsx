@@ -4,6 +4,9 @@ import {
   getSessionStart, moduleLabel, summarize, toCSV, type Skill, type Trial,
 } from '../lib/log';
 import { CHANGE_LEVELS, PRICE_LEVELS, type ChangeLevel, type PriceLevel } from '../lib/problems';
+import { getOverrides, replaceOverrides, type Overrides } from '../lib/overrides';
+import { HomeworkTab } from './HomeworkTab';
+import { PricesTab } from './PricesTab';
 import { ProgressTab } from './ProgressTab';
 import { DEFAULT_SETTINGS, useSettings, type HelpLevel, type PayWith, type Settings } from '../lib/settings';
 
@@ -72,9 +75,16 @@ function PinForm({ label, submitLabel, onSubmit }: { label: string; submitLabel:
   );
 }
 
-type Tab = 'settings' | 'session' | 'progress' | 'data';
+type Tab = 'settings' | 'session' | 'progress' | 'homework' | 'prices' | 'data';
 
-const TAB_LABELS: Record<Tab, string> = { settings: 'Settings', session: 'This session', progress: 'Progress', data: 'Data' };
+const TAB_LABELS: Record<Tab, string> = {
+  settings: 'Settings',
+  session: 'This session',
+  progress: 'Progress',
+  homework: 'Homework',
+  prices: 'Prices',
+  data: 'Data',
+};
 
 function ClinicianPanel({ onClose }: { onClose: () => void }) {
   const [tab, setTab] = useState<Tab>('settings');
@@ -97,6 +107,8 @@ function ClinicianPanel({ onClose }: { onClose: () => void }) {
         {tab === 'settings' && <SettingsTab />}
         {tab === 'session' && <SessionTab />}
         {tab === 'progress' && <ProgressTab />}
+        {tab === 'homework' && <HomeworkTab onClose={onClose} />}
+        {tab === 'prices' && <PricesTab />}
         {tab === 'data' && <DataTab />}
       </div>
     </div>
@@ -217,6 +229,12 @@ function SettingsTab() {
             <Select label="Tip percent" value={s.tipPct} options={[[20, '20% (10% doubled)'], [15, '15% (10% plus half)']]} onChange={set('tipPct')} />
           </Field>
         )}
+        <Field label="Say your order" hint="Restaurants: after ordering, he practices saying the order out loud.">
+          <Toggle label="Say your order" checked={s.sayOrder} onChange={set('sayOrder')} />
+        </Field>
+        <Field label="Scam pop-ups in stores" hint="Once per visit, a fake pop-up appears. Closing it is the right move. It's logged either way.">
+          <Toggle label="Scam pop-ups" checked={s.scamPopups} onChange={set('scamPopups')} />
+        </Field>
         <Field label="Calculator" hint="Shows a phone-style calculator. Its use is recorded with each problem.">
           <Toggle label="Calculator" checked={s.calculator} onChange={set('calculator')} />
         </Field>
@@ -251,7 +269,7 @@ function SettingsTab() {
         <Field label="How often the cashier makes a mistake" hint="Check the Change only.">
           <Select label="Cashier mistake rate" value={s.wrongChangeRate} options={[[0, 'Never'], [0.25, '1 in 4'], [0.5, 'Half the time'], [0.75, '3 in 4']]} onChange={set('wrongChangeRate')} />
         </Field>
-        <Field label="Problems per set" hint="Quick Change, Check the Change, Saving Up, Can I Afford It? and Chaise Bank.">
+        <Field label="Problems per set" hint="Practice sets in the Money skills section.">
           <Select label="Problems per set" value={s.setLength} options={[[5, '5'], [10, '10'], [15, '15'], [20, '20'], [0, 'No limit']]} onChange={set('setLength')} />
         </Field>
         <Field label="Budget" hint="He must keep his order within it, or put something back. In stores, the gift card becomes the budget. Free choice only (not with order cards).">
@@ -522,12 +540,13 @@ function DataTab() {
 
   async function importBackup(file: File) {
     try {
-      const data = JSON.parse(await file.text()) as { app?: string; trials?: Trial[]; settings?: Partial<Settings> };
+      const data = JSON.parse(await file.text()) as { app?: string; trials?: Trial[]; settings?: Partial<Settings>; prices?: Overrides };
       if (data.app !== 'cash-course' || !Array.isArray(data.trials)) throw new Error('not a backup');
       const known = new Set(all.map((t) => t.id));
       const added = data.trials.filter((t) => !known.has(t.id));
       replaceTrials([...all, ...added].sort((a, b) => a.at.localeCompare(b.at)));
       if (data.settings) update({ ...data.settings, pin: settings.pin });
+      if (data.prices) replaceOverrides(data.prices);
       setMessage(`Imported ${added.length} new problems.`);
       refresh((x) => x + 1);
     } catch {
@@ -555,7 +574,11 @@ function DataTab() {
           onClick={() => {
             const { pin: _pin, ...rest } = settings;
             void _pin;
-            download(`cash-course-backup-${today()}.json`, JSON.stringify({ app: 'cash-course', version: 1, settings: rest, trials: all }, null, 2), 'application/json');
+            download(
+              `cash-course-backup-${today()}.json`,
+              JSON.stringify({ app: 'cash-course', version: 1, settings: rest, trials: all, prices: getOverrides() }, null, 2),
+              'application/json',
+            );
           }}
         >
           Download full backup (JSON)

@@ -764,7 +764,11 @@ button:disabled {
 
 .totals {
   margin: 0 0 1rem;
-  max-width: 320px;
+  max-width: 440px;
+}
+
+.totals dd {
+  padding-left: 1rem;
 }
 
 .totals div {
@@ -2609,6 +2613,425 @@ html[data-contrast='high'] .board-section h3 {
   font-weight: 700;
 }
 
+/* ---------- Better deal ---------- */
+.deal-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.deal-card {
+  position: relative;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-height: 11rem;
+  padding: 1rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.deal-card:hover:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
+.deal-card:disabled {
+  opacity: 1;
+}
+
+.deal-card.picked {
+  border-color: var(--good);
+  background: var(--good-soft);
+}
+
+.deal-store {
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.deal-emoji {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.deal-badge {
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+  background: #de1c24;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.deal-sign {
+  font-size: 1.3rem;
+  font-weight: 800;
+}
+
+.deal-picked {
+  color: var(--good);
+  font-weight: 700;
+}
+
+/* ---------- Receipts ---------- */
+.receipt-task {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.bag {
+  min-width: 220px;
+  padding: 0.75rem 1rem;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+}
+
+.bag h3 {
+  font-size: 1rem;
+}
+
+.bag ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bag li {
+  padding: 0.2rem 0;
+}
+
+/* ---------- Scam messages ---------- */
+.msg-from {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 0.35rem;
+}
+
+.msg-phone {
+  max-width: 360px;
+  padding: 0.85rem;
+  margin-bottom: 1rem;
+  border-radius: 22px;
+  background: #f1f1f4;
+  border: 1px solid var(--border);
+}
+
+.msg-bubble {
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  border-radius: 16px 16px 16px 4px;
+  background: #e2e2e8;
+  color: #111;
+}
+
+.msg-dm .msg-bubble {
+  background: #dce8fb;
+}
+
+.msg-email {
+  max-width: 560px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.msg-subject {
+  margin-bottom: 0.5rem;
+}
+
+.msg-link {
+  color: #1a5fd0;
+  text-decoration: underline;
+}
+
+.msg-popup {
+  position: relative;
+  max-width: 420px;
+  padding: 1.25rem 1rem 1rem;
+  margin-bottom: 1rem;
+  border: 3px solid #e7a700;
+  border-radius: 12px;
+  background: #fff8dc;
+  color: #111;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.msg-popup-close {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.6rem;
+  color: #666;
+  font-size: 0.85rem;
+}
+
+.msg-popup-body {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.msg-popup-action {
+  display: inline-block;
+  padding: 0.5rem 1.25rem;
+  border-radius: 999px;
+  background: #22a33b;
+  color: #fff;
+  font-weight: 800;
+}
+
+.scam-modal {
+  position: relative;
+  text-align: center;
+  border: 3px solid #e7a700;
+  background: #fff8dc;
+  color: #111;
+}
+
+.scam-close {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.4rem;
+  min-height: 2rem;
+  min-width: 2rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.scam-body {
+  margin-top: 0.75rem;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.scam-action {
+  min-height: 3rem;
+  padding: 0.5rem 1.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: #22a33b;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+.scam-action:hover:not(:disabled) {
+  background: #1d8a32;
+}
+
+.scam-modal h2,
+.scam-modal ul,
+.scam-modal p {
+  text-align: left;
+}
+
+/* ---------- Say your order ---------- */
+.speech-bubble {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  margin: 0.5rem 0 1rem;
+  border-radius: 18px 18px 18px 4px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+}
+
+.speech-bubble p {
+  flex: 1;
+  min-width: 200px;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.speech-bubble.small p {
+  font-size: 1.05rem;
+}
+
+/* ---------- Prices editor ---------- */
+.prices-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+}
+
+.prices-head select {
+  min-height: 2.5rem;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.prices-table input {
+  min-height: 2.25rem;
+  padding: 0.2rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+}
+
+.prices-table td:first-child input {
+  width: min(22rem, 60vw);
+}
+
+.price-input {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.price-input input {
+  width: 5.5rem;
+}
+
+.price-input input[aria-invalid='true'] {
+  border-color: var(--bad);
+}
+
+.price-error {
+  display: block;
+  color: var(--bad);
+  font-size: 0.8rem;
+}
+
+.row-changed td {
+  background: var(--help-1);
+}
+
+/* ---------- Worksheets ---------- */
+.worksheet-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.worksheet {
+  max-width: 800px;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+  background: #fff;
+  color: #000;
+  border: 1px solid var(--border);
+}
+
+.worksheet-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  border-bottom: 2px solid #000;
+  margin-bottom: 0.75rem;
+}
+
+.worksheet-head h1 {
+  margin: 0;
+}
+
+.worksheet-name {
+  margin: 0;
+}
+
+.worksheet-menu {
+  margin: 0.75rem 0 1.25rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid #000;
+}
+
+.worksheet-menu h2 {
+  font-size: 1.05rem;
+}
+
+.worksheet-menu ul {
+  columns: 2;
+  column-gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.85rem;
+}
+
+.worksheet-menu li {
+  display: flex;
+  gap: 0.3rem;
+  break-inside: avoid;
+}
+
+.worksheet-dots {
+  flex: 1;
+  border-bottom: 1px dotted #555;
+  margin-bottom: 0.3em;
+}
+
+.worksheet-problems li {
+  padding: 0.6rem 0;
+  line-height: 1.6;
+  break-inside: avoid;
+}
+
+.worksheet-blank {
+  display: block;
+  margin-top: 0.4rem;
+  text-align: right;
+  white-space: pre;
+}
+
+.worksheet-challenge {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #000;
+}
+
+.worksheet-lines {
+  height: 7rem;
+  background: repeating-linear-gradient(to bottom, transparent 0, transparent 1.7rem, #999 1.7rem, #999 calc(1.7rem + 1px));
+}
+
+.worksheet-answers li {
+  padding: 0.25rem 0;
+}
+
+@media print {
+  .app-header,
+  .app-footer,
+  .calc-wrap,
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #fff;
+  }
+
+  .app-main {
+    padding: 0;
+    max-width: none;
+  }
+
+  .worksheet {
+    border: 0;
+    padding: 0;
+    max-width: none;
+  }
+
+  .worksheet-key {
+    break-before: page;
+  }
+}
+
 /* ---------- Phone layout ---------- */
 @media (max-width: 760px) {
   :root {
@@ -2829,5 +3252,17 @@ html[data-contrast='high'] .board-section h3 {
 
   .stepbar li {
     flex-shrink: 0;
+  }
+
+  .deal-options {
+    grid-template-columns: 1fr;
+  }
+
+  .worksheet {
+    padding: 1rem;
+  }
+
+  .worksheet-menu ul {
+    columns: 1;
   }
 }

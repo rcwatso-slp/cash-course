@@ -16,11 +16,12 @@ import { Totals } from '../../components/Totals';
 import { WalletPicker } from '../../components/WalletPicker';
 import { OrderList } from './OrderList';
 import { OrderScreen } from './OrderScreen';
+import { SayOrder } from './SayOrder';
 
-type Step = 'order' | 'subtotal' | 'tax' | 'total' | 'tip' | 'withTip' | 'budget' | 'pay' | 'change' | 'done';
+type Step = 'order' | 'say' | 'subtotal' | 'tax' | 'total' | 'tip' | 'withTip' | 'budget' | 'pay' | 'change' | 'done';
 
 const STEP_INDEX: Record<Step, number> = {
-  order: 0, subtotal: 1, tax: 1, total: 1, tip: 1, withTip: 1, budget: 1, pay: 2, change: 3, done: 4,
+  order: 0, say: 0, subtotal: 1, tax: 1, total: 1, tip: 1, withTip: 1, budget: 1, pay: 2, change: 3, done: 4,
 };
 
 export default function Restaurant({ restaurant }: { restaurant: RestaurantData }) {
@@ -43,6 +44,7 @@ function RestaurantOrder({ restaurant: r, onNewOrder }: { restaurant: Restaurant
     budget: settings.orderMode === 'task' ? 0 : pickBudget(settings.budget),
     tipMode: settings.tipMode,
     tipPct: settings.tipPct,
+    sayOrder: settings.sayOrder,
     orderNumber: randInt(100, 999),
   }));
   const [step, setStep] = useState<Step>('order');
@@ -107,9 +109,11 @@ function RestaurantOrder({ restaurant: r, onNewOrder }: { restaurant: Restaurant
           setLines={setLines}
           showRunningTotal={settings.showRunningTotal}
           menuStyle={settings.menuStyle}
-          onDone={() => setStep('subtotal')}
+          onDone={() => setStep(cfg.sayOrder ? 'say' : 'subtotal')}
         />
       )}
+
+      {step === 'say' && <SayOrder lines={lines} tableService={!!r.tableService} onDone={() => setStep('subtotal')} />}
 
       {step === 'subtotal' && (
         <Question

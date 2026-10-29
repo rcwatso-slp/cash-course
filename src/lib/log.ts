@@ -6,7 +6,8 @@ import { readJSON, removeKey, writeJSON } from './storage';
 export type ModuleId = string;
 export type Skill =
   | 'subtotal' | 'tax' | 'total' | 'pay' | 'change' | 'checkChange' | 'shipping' | 'left' | 'moreNeeded' | 'weeks'
-  | 'afford' | 'tip' | 'balance' | 'extraCost';
+  | 'afford' | 'tip' | 'balance' | 'extraCost'
+  | 'betterDeal' | 'dealSave' | 'readReceipt' | 'checkReceipt' | 'scam';
 
 const MODULE_LABELS: Record<string, string> = {
   quickChange: 'Quick Change',
@@ -15,6 +16,9 @@ const MODULE_LABELS: Record<string, string> = {
   afford: 'Can I Afford It?',
   bank: 'Chaise Bank',
   doordosh: 'DoorDosh',
+  deals: 'Better Deal?',
+  receipts: 'Read the Receipt',
+  scams: 'Spot the Scam',
   ...Object.fromEntries([...RESTAURANTS, ...STORES].map((x) => [x.id, x.name])),
 };
 
@@ -35,6 +39,11 @@ export const SKILL_LABELS: Record<Skill, string> = {
   tip: 'Figure the tip',
   balance: 'New bank balance',
   extraCost: 'Extra cost of delivery',
+  betterDeal: 'Pick the better deal',
+  dealSave: 'How much you save',
+  readReceipt: 'Read a receipt',
+  checkReceipt: 'Find receipt mistakes',
+  scam: 'Spot a scam',
 };
 
 export interface Trial {
@@ -62,6 +71,25 @@ export function getTrials(): Trial[] {
 
 export function addTrial(trial: Trial): void {
   writeJSON(TRIALS_KEY, [...getTrials(), trial]);
+}
+
+/** Log a one-click choice that isn't a Question (closing a scam pop-up). */
+export function logChoice(t: { nickname: string; module: ModuleId; skill: Skill; level: string; question: string; answer: string; correct: boolean; seconds: number }): void {
+  addTrial({
+    id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    at: new Date().toISOString(),
+    nickname: t.nickname,
+    module: t.module,
+    skill: t.skill,
+    level: t.level,
+    question: t.question,
+    answer: t.answer,
+    attempts: t.correct ? 1 : 2,
+    helpLevel: 0,
+    seconds: t.seconds,
+    calculator: false,
+    independent: t.correct,
+  });
 }
 
 export function replaceTrials(trials: Trial[]): void {

@@ -9,6 +9,7 @@ import { randInt } from '../../lib/random';
 import { useSettings } from '../../lib/settings';
 import { StepBar } from '../../components/StepBar';
 import { CHECKOUT_STEPS, Checkout } from './Checkout';
+import { ScamPopup } from './ScamPopup';
 import { PriceTag, ProductCard, ShoppingList, Stars } from './StoreParts';
 
 type View =
@@ -33,6 +34,9 @@ function StoreSession({ store, onShopAgain }: { store: StoreData; onShopAgain: (
   const [cart, setCart] = useState<CartLine[]>([]);
   const [notice, setNotice] = useState<string | null>(null);
   const [searchText, setSearchText] = useState('');
+  // Optional fake pop-up: shows once, after the second thing goes in the cart.
+  const [adds, setAdds] = useState(0);
+  const [popup, setPopup] = useState<'none' | 'open' | 'done'>('none');
 
   const price = (id: string) => shopPrice(findProduct(store, id), cfg.level);
   const wasPrice = (id: string) => {
@@ -46,6 +50,8 @@ function StoreSession({ store, onShopAgain }: { store: StoreData; onShopAgain: (
   };
   const add = (id: string, qty = 1) => {
     setCart((c) => addToCart(c, id, qty));
+    setAdds((a) => a + 1);
+    if (settings.scamPopups && popup === 'none' && adds + 1 === 2) setPopup('open');
     setNotice(`Added to ${store.cartName.toLowerCase()}: ${qty > 1 ? `${qty} × ` : ''}${findProduct(store, id).name}`);
   };
 
@@ -205,6 +211,17 @@ function StoreSession({ store, onShopAgain }: { store: StoreData; onShopAgain: (
               ← Keep shopping
             </button>
           </section>
+        )}
+
+        {popup === 'open' && (
+          <ScamPopup
+            module={store.id}
+            nickname={settings.nickname}
+            onClosed={(wasRight) => {
+              setPopup('done');
+              setNotice(wasRight ? 'Good call. That pop-up was fake, so closing it was the right move.' : null);
+            }}
+          />
         )}
 
         {inCheckout && (

@@ -34,7 +34,7 @@ export default function CheckChange() {
   if (setLength > 0 && n > setLength) {
     return (
       <div className="drill">
-        <h1 className="drill-title">🧾 Check the Change</h1>
+        <h1 className="drill-title">🪙 Check the Change</h1>
         <SetDone count={setLength} independent={independent} onAgain={restart} />
       </div>
     );
@@ -47,7 +47,7 @@ export default function CheckChange() {
 
   return (
     <div className="drill">
-      <h1 className="drill-title">🧾 Check the Change</h1>
+      <h1 className="drill-title">🪙 Check the Change</h1>
       <SetProgress n={n} of={setLength} />
 
       {phase === 'compute' && (
