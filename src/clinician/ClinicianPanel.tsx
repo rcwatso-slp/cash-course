@@ -5,6 +5,7 @@ import {
 } from '../lib/log';
 import { CHANGE_LEVELS, PRICE_LEVELS, type ChangeLevel, type PriceLevel } from '../lib/problems';
 import { getOverrides, replaceOverrides, type Overrides } from '../lib/overrides';
+import { ALL_AREAS } from '../hub/types';
 import { AreaSettings } from './AreaSettings';
 import { Field, Select, Toggle } from './fields';
 import { HomeworkTab } from './HomeworkTab';
@@ -111,6 +112,7 @@ function ClinicianPanel({ onClose }: { onClose: () => void }) {
         </button>
       </header>
       <div className="panel-body">
+        {(tab === 'settings' || tab === 'patients') && <MoneyOnlyNote onPatients={() => setTab('patients')} showPatientsLink={tab !== 'patients'} />}
         {tab === 'patients' && <PatientsTab onPicked={() => setTab('settings')} />}
         {tab === 'settings' && <SettingsTab />}
         {tab === 'session' && <SessionTab />}
@@ -118,6 +120,35 @@ function ClinicianPanel({ onClose }: { onClose: () => void }) {
         {tab === 'homework' && <HomeworkTab onClose={onClose} />}
         {tab === 'prices' && <PricesTab />}
         {tab === 'data' && <DataTab />}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * A patient with only Money turned on sees just Cash Course (that's how existing
+ * Cash Course users were carried over). Tell the clinician where the rest of the hub is.
+ */
+function MoneyOnlyNote({ onPatients, showPatientsLink }: { onPatients: () => void; showPatientsLink: boolean }) {
+  const { settings, update } = useSettings();
+  if (settings.areas.length !== 1 || settings.areas[0] !== 'money') return null;
+  const who = settings.nickname || 'This patient';
+  return (
+    <div className="notice money-only-note">
+      <p>
+        <b>{who} only sees Money &amp; Community (Cash Course).</b> The other therapy areas (memory, language, speech, swallowing,
+        reasoning, thinking &amp; planning) are turned off for them. Turn areas on under <b>Settings → Areas</b>, or add a new patient,
+        who starts with every area on.
+      </p>
+      <div className="button-row">
+        <button className="button" onClick={() => update({ areas: ALL_AREAS })}>
+          Turn on all areas for {settings.nickname || 'this patient'}
+        </button>
+        {showPatientsLink && (
+          <button className="button" onClick={onPatients}>
+            Add a patient
+          </button>
+        )}
       </div>
     </div>
   );
