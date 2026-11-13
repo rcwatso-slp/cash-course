@@ -25,7 +25,7 @@ export function ProgressTab() {
   return (
     <div className="progress-tab">
       <p className="muted">
-        Each column is one day of practice. "On his own" = right on the first try with no help. Mastery rule: {rule.pct}% or higher on his own for{' '}
+        Each column is one day of practice. "Independent" = right on the first try with no help or cue. Mastery rule: {rule.pct}% or higher independent for{' '}
         {rule.sessions} sessions in a row, counting sessions with at least {rule.min} problems of that skill. Change it in Settings.
       </p>
 
@@ -40,7 +40,7 @@ export function ProgressTab() {
         ))}
       </div>
 
-      <h3>On his own, by day{skill !== 'all' ? `: ${SKILL_LABELS[skill]}` : ''}</h3>
+      <h3>Independent, by day{skill !== 'all' ? `: ${SKILL_LABELS[skill]}` : ''}</h3>
       <IndependenceChart days={days} goal={rule.pct} />
       <details className="chart-table">
         <summary>Show as a table</summary>
@@ -49,7 +49,7 @@ export function ProgressTab() {
             <tr>
               <th>Day</th>
               <th>Problems</th>
-              <th>On his own</th>
+              <th>Independent</th>
               <th>%</th>
             </tr>
           </thead>
@@ -116,7 +116,7 @@ function IndependenceChart({ days, goal }: { days: DaySummary[]; goal: number })
 
   return (
     <div className="chart-wrap">
-      <svg viewBox={`0 0 ${W} ${H}`} className="chart" role="img" aria-label="Percent of problems done on his own, by day. The table below has the same numbers.">
+      <svg viewBox={`0 0 ${W} ${H}`} className="chart" role="img" aria-label="Percent of problems done independently, by day. The table below has the same numbers.">
         {[0, 50, 100].map((t) => (
           <g key={t}>
             <line x1={PAD.left} x2={W - PAD.right} y1={y(t)} y2={y(t)} className="chart-grid" />
@@ -146,7 +146,7 @@ function IndependenceChart({ days, goal }: { days: DaySummary[]; goal: number })
               key={d.date}
               tabIndex={0}
               role="img"
-              aria-label={`${shortDate(d.date)}: ${d.independent} of ${d.total} on his own, ${pct}%`}
+              aria-label={`${shortDate(d.date)}: ${d.independent} of ${d.total} independent, ${pct}%`}
               onPointerEnter={() => setHover(i)}
               onPointerLeave={() => setHover(null)}
               onFocus={() => setHover(i)}
@@ -172,7 +172,7 @@ function IndependenceChart({ days, goal }: { days: DaySummary[]; goal: number })
       </svg>
       {h && hover !== null && (
         <div className="chart-tooltip" style={{ left: `${((PAD.left + band * hover + band / 2) / W) * 100}%` }} role="status">
-          <b>{pctOf(h)}%</b> on his own
+          <b>{pctOf(h)}%</b> independent
           <span>
             {h.independent} of {h.total} problems · {shortDate(h.date)}
           </span>

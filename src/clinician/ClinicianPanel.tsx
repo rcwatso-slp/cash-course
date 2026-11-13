@@ -1,14 +1,17 @@
-import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import {
   SKILL_LABELS, clearTrials, getTrials, percent, replaceTrials, sessionTrials, startNewSession,
   getSessionStart, moduleLabel, summarize, toCSV, type Skill, type Trial,
 } from '../lib/log';
 import { CHANGE_LEVELS, PRICE_LEVELS, type ChangeLevel, type PriceLevel } from '../lib/problems';
 import { getOverrides, replaceOverrides, type Overrides } from '../lib/overrides';
+import { AreaSettings } from './AreaSettings';
+import { Field, Select, Toggle } from './fields';
 import { HomeworkTab } from './HomeworkTab';
+import { PatientsTab } from './PatientsTab';
 import { PricesTab } from './PricesTab';
 import { ProgressTab } from './ProgressTab';
-import { DEFAULT_SETTINGS, useSettings, type HelpLevel, type PayWith, type Settings } from '../lib/settings';
+import { DEFAULT_SETTINGS, useSettings, type HelpLevel, type PayWith, type ProfileStore, type Settings } from '../lib/settings';
 
 export function ClinicianGate({ onClose }: { onClose: () => void }) {
   const { settings, update } = useSettings();
@@ -75,9 +78,10 @@ function PinForm({ label, submitLabel, onSubmit }: { label: string; submitLabel:
   );
 }
 
-type Tab = 'settings' | 'session' | 'progress' | 'homework' | 'prices' | 'data';
+type Tab = 'patients' | 'settings' | 'session' | 'progress' | 'homework' | 'prices' | 'data';
 
 const TAB_LABELS: Record<Tab, string> = {
+  patients: 'Patients',
   settings: 'Settings',
   session: 'This session',
   progress: 'Progress',
@@ -87,13 +91,16 @@ const TAB_LABELS: Record<Tab, string> = {
 };
 
 function ClinicianPanel({ onClose }: { onClose: () => void }) {
-  const [tab, setTab] = useState<Tab>('settings');
+  const { settings, patients } = useSettings();
+  const [tab, setTab] = useState<Tab>(patients.length > 1 ? 'patients' : 'settings');
+  // Homework and prices are Cash Course tools; hide them when the patient doesn't use money skills.
+  const tabs = (Object.keys(TAB_LABELS) as Tab[]).filter((t) => (t !== 'homework' && t !== 'prices') || settings.areas.includes('money'));
   return (
     <div className="panel" role="dialog" aria-modal="true" aria-label="Clinician settings">
       <header className="panel-head">
-        <h2>Clinician</h2>
+        <h2>Clinician{settings.nickname ? ` · ${settings.nickname}` : ''}</h2>
         <nav className="panel-tabs">
-          {(Object.keys(TAB_LABELS) as Tab[]).map((t) => (
+          {tabs.map((t) => (
             <button key={t} aria-pressed={tab === t} onClick={() => setTab(t)}>
               {TAB_LABELS[t]}
             </button>
@@ -104,6 +111,7 @@ function ClinicianPanel({ onClose }: { onClose: () => void }) {
         </button>
       </header>
       <div className="panel-body">
+        {tab === 'patients' && <PatientsTab onPicked={() => setTab('settings')} />}
         {tab === 'settings' && <SettingsTab />}
         {tab === 'session' && <SessionTab />}
         {tab === 'progress' && <ProgressTab />}
@@ -117,46 +125,6 @@ function ClinicianPanel({ onClose }: { onClose: () => void }) {
 
 // ---------- Settings ----------
 
-function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
-  return (
-    <div className="field">
-      <div className="field-label">
-        <span>{label}</span>
-        {hint && <span className="field-hint">{hint}</span>}
-      </div>
-      <div className="field-control">{children}</div>
-    </div>
-  );
-}
-
-function Toggle({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
-  return (
-    <label className="toggle">
-      <input type="checkbox" aria-label={label} checked={checked} onChange={(e) => onChange(e.target.checked)} />
-      <span>{checked ? 'On' : 'Off'}</span>
-    </label>
-  );
-}
-
-function Select<T extends string | number>({ label, value, options, onChange }: { label: string; value: T; options: [T, string][]; onChange: (v: T) => void }) {
-  return (
-    <select
-      aria-label={label}
-      value={String(value)}
-      onChange={(e) => {
-        const found = options.find(([v]) => String(v) === e.target.value);
-        if (found) onChange(found[0]);
-      }}
-    >
-      {options.map(([v, text]) => (
-        <option key={String(v)} value={String(v)}>
-          {text}
-        </option>
-      ))}
-    </select>
-  );
-}
-
 function SettingsTab() {
   const { settings: s, update } = useSettings();
   const set = <K extends keyof Settings>(key: K) => (value: Settings[K]) => update({ [key]: value } as Partial<Settings>);
@@ -165,14 +133,21 @@ function SettingsTab() {
   return (
     <div className="settings">
       <section>
-        <h3>Client</h3>
-        <Field label="Nickname" hint="Initials or a nickname only. No full names.">
+        <h3>Patient</h3>
+        <Field label="Nickname" hint="Initials or a nickname only. No full names. Switch or add patients in the Patients tab.">
           <input aria-label="Nickname" value={s.nickname} maxLength={20} onChange={(e) => update({ nickname: e.target.value })} />
+        </Field>
+        <Field label="Problems per set" hint="How many items in a practice set, in every area.">
+          <Select label="Problems per set" value={s.setLength} options={[[5, '5'], [10, '10'], [15, '15'], [20, '20'], [0, 'No limit']]} onChange={set('setLength')} />
         </Field>
       </section>
 
+      <AreaSettings />
+
+      {s.areas.includes('money') && (
+      <>
       <section>
-        <h3>Ordering, shopping and totals</h3>
+        <h3>💵 Money: ordering, shopping and totals</h3>
         <Field label="Price difficulty" hint="Applies to the next new order.">
           <Select<PriceLevel>
             label="Price difficulty"
@@ -241,7 +216,7 @@ function SettingsTab() {
       </section>
 
       <section>
-        <h3>Paying and change</h3>
+        <h3>💵 Money: paying and change</h3>
         <Field label="How he pays at restaurants" hint="Applies to the next new order.">
           <Select<PayWith>
             label="How he pays"
@@ -268,9 +243,6 @@ function SettingsTab() {
         </Field>
         <Field label="How often the cashier makes a mistake" hint="Check the Change only.">
           <Select label="Cashier mistake rate" value={s.wrongChangeRate} options={[[0, 'Never'], [0.25, '1 in 4'], [0.5, 'Half the time'], [0.75, '3 in 4']]} onChange={set('wrongChangeRate')} />
-        </Field>
-        <Field label="Problems per set" hint="Practice sets in the Money skills section.">
-          <Select label="Problems per set" value={s.setLength} options={[[5, '5'], [10, '10'], [15, '15'], [20, '20'], [0, 'No limit']]} onChange={set('setLength')} />
         </Field>
         <Field label="Budget" hint="He must keep his order within it, or put something back. In stores, the gift card becomes the budget. Free choice only (not with order cards).">
           <Select
@@ -300,9 +272,11 @@ function SettingsTab() {
           </div>
         </Field>
       </section>
+      </>
+      )}
 
       <section>
-        <h3>Help</h3>
+        <h3>Help (all areas)</h3>
         <Field label="Help levels available">
           <Select<HelpLevel>
             label="Help levels available"
@@ -312,9 +286,9 @@ function SettingsTab() {
           />
         </Field>
         <Field label="Start with help showing" hint="For errorless teaching. Fade back to None across sessions.">
-          <Select<HelpLevel> label="Start with help showing" value={s.startHelp} options={[[0, 'None (he tries first)'], [1, 'Hint'], [2, 'More help'], [3, 'Answer']]} onChange={set('startHelp')} />
+          <Select<HelpLevel> label="Start with help showing" value={s.startHelp} options={[[0, 'None (they try first)'], [1, 'Hint / first cue'], [2, 'More help / second cue'], [3, 'Answer / model']]} onChange={set('startHelp')} />
         </Field>
-        <Field label="Wait before help" hint="The help button unlocks after this many seconds, so he tries first.">
+        <Field label="Wait before help" hint="The help button unlocks after this many seconds, so they try first.">
           <Select label="Wait before help" value={s.helpDelay} options={[[0, 'No wait'], [5, '5 seconds'], [10, '10 seconds'], [20, '20 seconds'], [30, '30 seconds']]} onChange={set('helpDelay')} />
         </Field>
         <Field label="Show a hint after a wrong answer">
@@ -324,7 +298,7 @@ function SettingsTab() {
 
       <section>
         <h3>Mastery rule</h3>
-        <Field label="On his own at least">
+        <Field label="Independent at least">
           <Select label="Mastery percent" value={s.masteryPct} options={[[70, '70%'], [80, '80%'], [90, '90%'], [100, '100%']]} onChange={set('masteryPct')} />
         </Field>
         <Field label="Sessions in a row">
@@ -350,7 +324,7 @@ function SettingsTab() {
 
       <section>
         <h3>Security</h3>
-        <Field label="Clinician PIN" hint="This keeps settings away from your client. It is not a password for sensitive data.">
+        <Field label="Clinician PIN" hint="One PIN for this device, for every patient. It keeps settings away from patients. It is not a password for sensitive data.">
           {changingPin ? (
             <PinForm
               label="New PIN"
@@ -367,8 +341,24 @@ function SettingsTab() {
             </button>
           )}
         </Field>
-        <Field label="Reset settings" hint="Puts every setting back to the default. Keeps your data and PIN.">
-          <button className="button" onClick={() => update({ ...DEFAULT_SETTINGS, pin: s.pin, nickname: s.nickname })}>
+        <Field label="Reset settings" hint="Puts this patient's settings back to the default. Keeps their data, nickname, targets, swallow plan and your PIN.">
+          <button
+            className="button"
+            onClick={() =>
+              update({
+                ...DEFAULT_SETTINGS,
+                pin: s.pin,
+                nickname: s.nickname,
+                areas: s.areas,
+                srtTargets: s.srtTargets,
+                exercises: s.exercises,
+                strategies: s.strategies,
+                dietSolids: s.dietSolids,
+                dietLiquids: s.dietLiquids,
+                swallowNotes: s.swallowNotes,
+              })
+            }
+          >
             Reset to defaults
           </button>
         </Field>
@@ -385,7 +375,7 @@ function SummaryCards({ trials }: { trials: Trial[] }) {
   const s = summarize(trials);
   const cards: [string, number | string, string?][] = [
     ['Problems', s.total],
-    ['On his own', s.independent, percent(s.independent, s.total)],
+    ['Independent', s.independent, percent(s.independent, s.total)],
     ['No help, 2+ tries', s.noHelpMoreTries, percent(s.noHelpMoreTries, s.total)],
     ['Used a hint', s.byHelp[1], percent(s.byHelp[1], s.total)],
     ['Used more help', s.byHelp[2], percent(s.byHelp[2], s.total)],
@@ -421,7 +411,7 @@ function SessionTab() {
             This session started <b>today at {timeOf(start)}</b>
             {settings.nickname ? ` for ${settings.nickname}` : ''}.
           </p>
-          <p className="muted">"On his own" means right on the first try with no help.</p>
+          <p className="muted">"Independent" means right on the first try with no help or cue.</p>
         </div>
         <button
           className="button"
@@ -453,7 +443,7 @@ function SessionTab() {
               <tr>
                 <th>Skill</th>
                 <th>Problems</th>
-                <th>On his own</th>
+                <th>Independent</th>
                 <th>Hint</th>
                 <th>More help</th>
                 <th>Answer</th>
@@ -531,26 +521,37 @@ function download(filename: string, text: string, type: string) {
 const today = () => new Date().toISOString().slice(0, 10);
 
 function DataTab() {
-  const { settings, update } = useSettings();
+  const { settings, update, store, replaceProfiles } = useSettings();
   const [message, setMessage] = useState<string | null>(null);
   const [, refresh] = useState(0);
   const all = getTrials();
   const mine = all.filter((t) => t.nickname === settings.nickname);
-  const who = settings.nickname || 'client';
+  const who = settings.nickname || 'patient';
 
   async function importBackup(file: File) {
     try {
-      const data = JSON.parse(await file.text()) as { app?: string; trials?: Trial[]; settings?: Partial<Settings>; prices?: Overrides };
+      const data = JSON.parse(await file.text()) as { app?: string; trials?: Trial[]; settings?: Partial<Settings>; prices?: Overrides; profiles?: ProfileStore };
       if (data.app !== 'cash-course' || !Array.isArray(data.trials)) throw new Error('not a backup');
       const known = new Set(all.map((t) => t.id));
       const added = data.trials.filter((t) => !known.has(t.id));
       replaceTrials([...all, ...added].sort((a, b) => a.at.localeCompare(b.at)));
-      if (data.settings) update({ ...data.settings, pin: settings.pin });
+      let newPatients = 0;
+      if (data.profiles?.ids?.length) {
+        // Add patients from the backup that aren't on this device. Existing patients are kept as they are.
+        const add = data.profiles.ids.filter((id) => !store.profiles[id] && data.profiles!.profiles[id]);
+        newPatients = add.length;
+        if (add.length)
+          replaceProfiles({
+            activeId: store.activeId,
+            ids: [...store.ids, ...add],
+            profiles: { ...store.profiles, ...Object.fromEntries(add.map((id) => [id, data.profiles!.profiles[id]])) },
+          });
+      } else if (data.settings) update({ ...data.settings, pin: settings.pin });
       if (data.prices) replaceOverrides(data.prices);
-      setMessage(`Imported ${added.length} new problems.`);
+      setMessage(`Imported ${added.length} new problems${newPatients ? ` and ${newPatients} new patient${newPatients === 1 ? '' : 's'}` : ''}.`);
       refresh((x) => x + 1);
     } catch {
-      setMessage("That file isn't a Cash Course backup.");
+      setMessage("That file isn't a backup from this app.");
     }
   }
 
@@ -558,6 +559,7 @@ function DataTab() {
     <div className="data">
       <p>
         All data stays in this browser on this device. Nothing is sent anywhere. Export a copy for your notes, or a backup to move to another device.
+        The backup has every patient on this device.
       </p>
       <SummaryCards trials={mine} />
       <p className="muted">
@@ -566,7 +568,7 @@ function DataTab() {
 
       <div className="button-row">
         <button className="primary" disabled={mine.length === 0} onClick={() => download(`cash-course-${who}-${today()}.csv`, toCSV(mine), 'text/csv')}>
-          Export {settings.nickname || 'this client'}'s data (CSV)
+          Export {settings.nickname || 'this patient'}'s data (CSV)
         </button>
         <button
           className="button"
@@ -576,7 +578,7 @@ function DataTab() {
             void _pin;
             download(
               `cash-course-backup-${today()}.json`,
-              JSON.stringify({ app: 'cash-course', version: 1, settings: rest, trials: all, prices: getOverrides() }, null, 2),
+              JSON.stringify({ app: 'cash-course', version: 2, settings: rest, profiles: store, trials: all, prices: getOverrides() }, null, 2),
               'application/json',
             );
           }}

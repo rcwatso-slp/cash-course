@@ -1,4 +1,28 @@
-# Money Skills Practice Site — Plan
+# Therapy Hub — Plan
+
+Cash Course grew into a therapy hub (November 2026). The money-skills plan below still applies to the **Money & Community** area. The hub adds six areas for adolescents through older adults, built on the same pieces: one task at a time, three help levels (used as a cueing hierarchy), every item logged with the help used, mastery and progress charts, and a PIN-locked clinician panel.
+
+### Hub decisions
+| Topic | Decision |
+|---|---|
+| Where | Same site and repo. All Cash Course links and saved data keep working. Old settings became the first patient. |
+| Patients | Several patients per device, by initials. Settings per patient; one clinician PIN per device. Data is kept apart by nickname. |
+| Areas | Memory, Language (aphasia), Speech (dysarthria), Swallowing (dysphagia), Reasoning, Thinking & Planning (executive function/attention), Money & Community. |
+| Answers | Spoken (clinician marks), choose, or typed, set per patient. |
+| Audio | Microphone only for the loudness meter and listen-back. Nothing saved or sent. |
+| Swallowing | Practice and education only. Patients see only what the SLP prescribes. |
+
+### Next ideas
+- **Memory:** name–face association, prospective memory ("in 10 minutes, remind me to…"), memory book / orientation board, errorless learning mode for spaced retrieval.
+- **Language:** semantic feature analysis, verb naming / sentence building, reading comprehension (signs, menus, labels), writing/spelling, script practice for conversations.
+- **Speech:** syllable-level pacing, minimal pairs, intelligibility tracking across sessions, loudness calibration notes.
+- **Swallowing:** IDDSI food/drink level matching (needs careful, unambiguous items), meal-time checklist for caregivers.
+- **Thinking & Planning:** money + calendar combined tasks (plan a week on a budget), recipe following with a timer, Stroop-style inhibition, sustained attention.
+- **Clinician:** per-area session notes in the CSV, a printable session summary, home-program printouts for each area.
+
+---
+
+# Money & Community (Cash Course) — Plan
 
 A front-end-only website hosted on GitHub Pages, used during therapy sessions to practice functional money skills: ordering food, online shopping, totaling costs, paying, and budgeting.
 

@@ -1,7 +1,7 @@
-// Offline support: the app shell is cached so Cash Course works without Wi-Fi.
+// Offline support: the app shell is cached so the app works without Wi-Fi.
 // Pages: try the network first (to get updates), fall back to the cached copy.
 // Files (scripts, styles, icons): use the cached copy, fetch and cache if missing.
-const CACHE = 'cash-course-v1';
+const CACHE = 'therapy-hub-v2';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', (event) => {

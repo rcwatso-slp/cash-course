@@ -20,7 +20,10 @@ export default function Home() {
   const { settings } = useSettings();
   return (
     <div className="home">
-      <h1>{settings.nickname ? `Hi, ${settings.nickname}.` : 'Hi.'} What do you want to practice?</h1>
+      <h1>
+        {settings.areas.length === 1 ? (settings.nickname ? `Hi, ${settings.nickname}. ` : 'Hi. ') : '💵 '}
+        {settings.areas.length === 1 ? 'What do you want to practice?' : 'Money & Community'}
+      </h1>
 
       <h2 className="home-section">🍽️ Eat out</h2>
       <div className="home-tiles">

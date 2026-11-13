@@ -1,7 +1,7 @@
 {
-  "name": "Cash Course",
-  "short_name": "Cash Course",
-  "description": "Practice ordering, shopping, paying and making change.",
+  "name": "Therapy Hub",
+  "short_name": "Therapy Hub",
+  "description": "Speech, language, memory, thinking and money-skills practice for therapy sessions.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

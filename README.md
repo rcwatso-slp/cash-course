@@ -1,10 +1,47 @@
-# Cash Course
+# Therapy Hub (with Cash Course)
 
-A money-skills practice site for therapy sessions. It covers ordering food, adding up a total, paying, making change and checking change. It runs entirely in the browser and is hosted free on GitHub Pages. There are no accounts and no server, and data never leaves the device.
+A practice site for speech-language therapy sessions, for adolescents through older adults. It covers memory, language (aphasia), speech (dysarthria), swallowing (dysphagia), reasoning, thinking and planning (executive function and attention), and money skills (**Cash Course**). It runs entirely in the browser and is hosted free on GitHub Pages. There are no accounts and no server, and data never leaves the device.
 
-See [PLAN.md](PLAN.md) for the full roadmap.
+See [PLAN.md](PLAN.md) for the roadmap.
 
-## What's in it
+## Areas and tasks
+
+| Area | Task | What it practices |
+|---|---|---|
+| 🧠 Memory | **Spaced Retrieval** | One important fact (room number, call button, a safety step) recalled at 30 s → 1 → 2 → 4 → 8 → 16 → 32 min. A miss gives the answer, then goes back one interval. A banner on every page says when it's time to ask, so you can do other tasks in between. |
+| | **Word List** | 3–10 words (with pictures, words only, or heard only) → filler wait → free recall (clinician checks off) → category cues → pick them out of a list. Delayed recall of the last list later in the session. |
+| | **Story Recall** | Voicemails, appointment reminders, recipes, notices and news, read or heard. Questions after, with "look again" as a cue. Can be asked again later (delayed). |
+| | **Remember the Number** | Room numbers, door codes, phone numbers. Forward or backward. Gets longer after a right answer, shorter after two misses. |
+| | **Matching Pairs** | Card-flip visual memory, 3, 6 or 8 pairs. |
+| 💬 Language | **Name It** | Picture naming with a cueing hierarchy: meaning → first sound → "say it with me". |
+| | **Point to It** | Hear or read a word, tap the picture. Foils get closer at higher levels (same category, same first sound). |
+| | **Follow Directions** | 1-step → 2–3 step → "before/after", "if/if not" and "except" directions on a picture board. |
+| | **Yes or No** | Simple facts → comparisons, reversals and word meanings. |
+| | **Finish the Sentence** | "Salt and ___" → everyday sentences → less predictable ones. |
+| | **Name Things in a Category** | 30/60/90-second timer and a +1 counter. Goal set per category. |
+| 🗣️ Speech | **Loud & Clear** | Live loudness meter with a target line (set from the patient's own voice), long "ah" timing, loud phrases. |
+| | **Say It Clearly** | Words → phrases → sentences, mostly functional. Record and listen back. Clinician rates understood / partly / not understood. |
+| | **Pacing Board** | Tap a box per word at a set pace, with a demo. Shows the words-per-minute. Plus a 5-second pa-ta-ka warm-up with a count. |
+| 🥄 Swallowing | **My Exercises** | Only the exercises you prescribe (effortful swallow, Masako, Shaker, Mendelsohn, CTAR, supraglottic, tongue press, jaw opening), with your reps, holds and sets. Big hold countdown, rest timer, reps logged. |
+| | **My Swallow Plan** | Diet, strategies and notes on a printable bedside card. |
+| | **Remember My Strategies** | Recall practice for the patient's own strategies, plus general safety scenarios. |
+| 🧩 Reasoning | **Odd One Out, Analogies, Safety & Problem Solving, Read Between the Lines, What's Wrong Here?** | Multiple choice with a hint → narrowed to two → the answer and why. |
+| 📋 Thinking & Planning | **Put It in Order** | Steps of everyday tasks (3–7). Right steps stay; the rest go back. |
+| | **Pill Organizer** | Read 1–3 labels ("twice a day", "Mon/Wed/Fri", "bedtime") and fill a weekly pill box. Wrong boxes are outlined. |
+| | **Read the Calendar** | Questions about a week of appointments, with time math and schedule clashes. |
+| | **Find Them All** | Cancellation/visual scanning. Results split into **missed on the left vs. right**, useful for neglect. |
+| | **Switch It Up** | Connect 1-2-3… or switch 1-A-2-B… Time and wrong taps logged. |
+| 💵 Money & Community | **Cash Course** | Everything below, unchanged. |
+
+All content is original. Pictures are emoji, so there's nothing to license and it all works offline.
+
+**How the patient answers** (memory, language, swallowing): **spoken** (you tap ✓ / ✗ and can "move on" if they don't get it), **choose** from options, or **typed** (case, typos, plurals and "a/the" are forgiven).
+
+**Patients:** Clinician → **Patients** lists everyone on the device by initials. Each patient has their own settings, areas, levels, spaced-retrieval targets and swallow plan. Turn off areas a patient doesn't use. With only one area on, the app opens straight to it. A patient with only Money on sees the original Cash Course. A device that already had Cash Course keeps opening to Cash Course: its existing settings became patient 1 with only Money turned on.
+
+**Microphone:** off by default. When on, it's used only for the meter and record-and-listen-back. Sound is processed in the browser, never saved or sent.
+
+## Cash Course (Money & Community)
 
 | Section | Activity | What he practices |
 |---|---|---|
@@ -29,7 +66,10 @@ Every problem has three help levels: **Hint → More help → Answer**. Each pro
 
 ## Clinician settings
 
-Click **🔒 Clinician** at the bottom-left of any page. The first time, you'll create a 4-digit PIN.
+Click **🔒 Clinician** at the bottom-left of any page. The first time, you'll create a 4-digit PIN. One PIN covers every patient on the device.
+
+- **Patients:** add, switch and remove patients (initials only)
+- **Areas and levels:** which areas each patient sees, how they answer, and a level (1–3) per area. Memory: list length, wait before recall, spaced-retrieval targets. Speech: microphone, loudness line, pacing speed. Swallowing: exercises with reps/holds/sets, strategies, diet and notes for the card.
 
 - **Ordering and shopping:** price difficulty (whole dollars → cents), free choice vs. task (order card / shopping list), kiosk vs. menu board, running total on/off, gift card amount for online stores
 - **Tax:** on/off, rate (default 7.25%), whether the app or the client works out the tax
