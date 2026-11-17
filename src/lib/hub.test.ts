@@ -180,6 +180,17 @@ describe('content', () => {
     for (const list of [YES_NO, SENTENCES, ODD_ONE_OUT, ANALOGIES, SAFETY, INFERENCE, WHATS_WRONG, STORIES])
       for (const level of [1, 2, 3]) expect(list.some((x) => x.level === level)).toBe(true);
   });
+  it('has the odd one out first when the reason names it', () => {
+    // The first option is the answer. If the reason says "A dollar is…" or "Tuesday is…",
+    // that item must be the first option, not one of the others.
+    for (const item of ODD_ONE_OUT) {
+      const why = item.why.toLowerCase();
+      for (const other of item.options.slice(1)) {
+        const o = other.toLowerCase();
+        expect(why.includes(`a ${o} is`) || why.startsWith(`${o} is`) || why.includes(`. ${o} is`), `${item.options.join(', ')}: reason names ${other}`).toBe(false);
+      }
+    }
+  });
   it('has distinct options in every multiple-choice item', () => {
     for (const item of [...ODD_ONE_OUT, ...ANALOGIES, ...SAFETY, ...INFERENCE, ...WHATS_WRONG]) {
       expect(new Set(item.options).size, item.prompt).toBe(item.options.length);

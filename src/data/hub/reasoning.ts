@@ -26,7 +26,7 @@ export const ODD_ONE_OUT: ReasonItem[] = [
   { prompt: 'Which one does not belong?', options: ['Lettuce', 'Lemon', 'Banana', 'Corn'], why: 'The others are yellow.', hint: 'Think about colors.', level: 2 },
   { prompt: 'Which one does not belong?', options: ['Whisper', 'Shout', 'Yell', 'Scream'], why: 'The others are loud. A whisper is quiet.', hint: 'Think about how loud each one is.', level: 3 },
   { prompt: 'Which one does not belong?', options: ['Pillow', 'Thermometer', 'Ruler', 'Scale'], why: 'The others measure something: temperature, length and weight.', hint: 'Three of them measure things.', level: 3 },
-  { prompt: 'Which one does not belong?', options: ['Penny', 'Dollar', 'Dime', 'Quarter'], why: 'The others are coins. A dollar is usually paper.', hint: 'Think about what they are made of.', level: 3 },
+  { prompt: 'Which one does not belong?', options: ['Dollar', 'Penny', 'Dime', 'Quarter'], why: 'The others are coins. A dollar is usually paper money.', hint: 'Think about what they are made of.', level: 3 },
   { prompt: 'Which one does not belong?', options: ['Cotton', 'Glass', 'Window', 'Mirror'], why: 'Windows and mirrors are made of glass. Cotton is not.', hint: 'What are three of them made of?', level: 3 },
   { prompt: 'Which one does not belong?', options: ['Brave', 'Happy', 'Glad', 'Cheerful'], why: 'The others all mean feeling good.', hint: 'Three of them mean almost the same thing.', level: 3 },
   { prompt: 'Which one does not belong?', options: ['Chair', 'Violin', 'Guitar', 'Harp'], why: 'The others are instruments with strings.', hint: 'Three of them make music.', level: 3 },
