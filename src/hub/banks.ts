@@ -6,6 +6,7 @@ import { ANALOGIES, INFERENCE, ODD_ONE_OUT, SAFETY, WHATS_WRONG, type ReasonItem
 import { SEQUENCES, sequencesFor } from '../data/hub/sequences';
 import { CLEAR_SPEECH, LOUD_PHRASES, PACING } from '../data/hub/speech';
 import { STORIES } from '../data/hub/stories';
+import { CATEGORY_ITEMS, RIDDLES, WORD_LINKS } from '../data/hub/wordfinding';
 import { strategyById, SWALLOW_SCENARIOS } from '../data/hub/swallow';
 import type { Settings } from '../lib/settings';
 import type { AreaId } from './types';
@@ -41,6 +42,9 @@ export function banksFor(s: Settings): Bank[] {
     { task: 'point-to-it', area: 'language', current: picturesUpTo(Math.max(2, s.languageLevel)), all: PICTURES },
     { task: 'yes-or-no', area: 'language', current: atLevel(YES_NO, s.languageLevel), all: YES_NO },
     { task: 'finish-sentence', area: 'language', current: atLevel(SENTENCES, s.languageLevel), all: SENTENCES },
+    { task: 'what-am-i', area: 'language', current: atLevel(RIDDLES, s.languageLevel), all: RIDDLES },
+    { task: 'word-links', area: 'language', current: atLevel(WORD_LINKS, s.languageLevel), all: WORD_LINKS },
+    { task: 'category-builder', area: 'language', current: atLevel(CATEGORY_ITEMS, s.languageLevel), all: CATEGORY_ITEMS },
     { task: 'category-naming', area: 'language', current: atLevel(FLUENCY_CATEGORIES, s.languageLevel), all: FLUENCY_CATEGORIES },
     { task: 'loud-clear', area: 'speech', current: LOUD_PHRASES, all: LOUD_PHRASES },
     { task: 'say-it-clearly', area: 'speech', current: CLEAR_SPEECH[s.speechLevel], all: Object.values(CLEAR_SPEECH).flat() },

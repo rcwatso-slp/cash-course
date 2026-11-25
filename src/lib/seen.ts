@@ -13,6 +13,8 @@ export function itemKey(item: unknown): string {
     const o = item as Record<string, unknown>;
     // Odd One Out prompts are all the same, so add the choices.
     if (typeof o.prompt === 'string' && Array.isArray(o.options)) return `${o.prompt}|${o.options.join('|')}`;
+    // Word Links has the same word for different questions ("big": same as / opposite of).
+    if (typeof o.type === 'string' && typeof o.word === 'string') return `${o.type}|${o.word}`;
     for (const k of ['q', 'prompt', 'word', 'stem', 'title', 'name', 'id']) if (typeof o[k] === 'string') return o[k] as string;
   }
   return JSON.stringify(item);

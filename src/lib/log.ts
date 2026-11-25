@@ -20,7 +20,10 @@ export type Skill =
   // Reasoning
   | 'oddOneOut' | 'analogy' | 'safety' | 'inference' | 'absurdity'
   // Thinking & Planning
-  | 'sequencing' | 'pillBox' | 'calendar' | 'scanning' | 'trails';
+  | 'sequencing' | 'pillBox' | 'calendar' | 'scanning' | 'trails'
+  // Added: workbook-style skills
+  | 'mentalManip' | 'chunking' | 'nameFace' | 'describeNaming' | 'wordLinks' | 'categories' | 'readDo' | 'deduction'
+  | 'clockTime' | 'planner' | 'checkWords' | 'deposit' | 'register';
 
 const MODULE_LABELS: Record<string, string> = {
   quickChange: 'Quick Change',
@@ -88,6 +91,19 @@ export const SKILL_LABELS: Record<Skill, string> = {
   calendar: 'Calendar',
   scanning: 'Visual scanning',
   trails: 'Alternating attention',
+  mentalManip: 'Mental manipulation',
+  chunking: 'Chunking numbers',
+  nameFace: 'Name–face association',
+  describeNaming: 'Naming from a description',
+  wordLinks: 'Word relationships',
+  categories: 'Categories',
+  readDo: 'Written directions',
+  deduction: 'Deductive reasoning',
+  clockTime: 'Telling time',
+  planner: 'Daily planner',
+  checkWords: 'Writing checks',
+  deposit: 'Deposit slips',
+  register: 'Check register',
 };
 
 export interface Trial {

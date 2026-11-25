@@ -4459,3 +4459,316 @@ html[data-contrast='high'] .board-section h3 {
   max-width: 760px;
   margin-bottom: 0.5rem;
 }
+
+/* ---------- Workbook-style tasks ---------- */
+.clue-list {
+  margin: 0.25rem 0 0.75rem;
+  padding-left: 1.25rem;
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+
+.tap-answer {
+  min-height: 2.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 2px dashed var(--border);
+  border-radius: 10px;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.chunk-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 1rem 0 0.5rem;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.chunk-cell {
+  display: inline-flex;
+  align-items: center;
+}
+
+.chunk-gap {
+  min-height: 2.75rem;
+  min-width: 1.6rem;
+  padding: 0;
+  margin: 0 0.1rem;
+  border: 1px dashed var(--border);
+  color: var(--text-muted);
+  font-size: 1.25rem;
+}
+
+.chunk-gap.on {
+  border: 2px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.chunk-digit {
+  min-width: 1.2ch;
+  text-align: center;
+}
+
+.chunk-preview {
+  font-size: 1.4rem;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  white-space: pre;
+}
+
+.people-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+}
+
+.person-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 9rem;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.person-face {
+  font-size: 4rem;
+  line-height: 1.1;
+}
+
+.person-name {
+  font-size: 1.4rem;
+}
+
+.person-link {
+  margin-top: 0.35rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  font-weight: 600;
+}
+
+.clue-grid {
+  max-width: 480px;
+  text-align: center;
+}
+
+.clue-grid td {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.rd-board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 5rem));
+  gap: 0.5rem;
+  margin: 0.75rem 0;
+}
+
+.rd-piece {
+  aspect-ratio: 1;
+  min-height: 0;
+  padding: 0;
+  border-width: 2px;
+  font-size: 2.25rem;
+}
+
+.rd-piece.on {
+  border: 3px solid var(--accent);
+  background: var(--accent-soft);
+}
+
+.rd-piece.target {
+  outline: 3px dashed #d9822b;
+  outline-offset: 2px;
+}
+
+.rd-piece:disabled {
+  opacity: 1;
+}
+
+.rd-red {
+  color: #c0392b;
+}
+
+.rd-blue {
+  color: #2e6fb7;
+}
+
+.rd-green {
+  color: #2e8b57;
+}
+
+.rd-number {
+  font-size: 1.9rem;
+  font-weight: 700;
+}
+
+.clock-prompt,
+.clock-set {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.analog-clock .clock-face {
+  fill: var(--surface);
+  stroke: var(--text);
+  stroke-width: 2;
+}
+
+.analog-clock .clock-tick {
+  stroke: var(--text);
+}
+
+.analog-clock .clock-num {
+  fill: var(--text);
+  font-size: 8px;
+  font-weight: 700;
+  font-family: system-ui, sans-serif;
+}
+
+.analog-clock .clock-hour {
+  stroke: var(--text);
+}
+
+.analog-clock .clock-minute {
+  stroke: var(--accent);
+}
+
+.analog-clock .clock-center {
+  fill: var(--text);
+}
+
+.clock-readout {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.clock-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+}
+
+.clock-buttons span {
+  font-weight: 600;
+}
+
+.planner {
+  max-width: 560px;
+  margin: 0.5rem 0 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.planner-row {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.planner-row:last-child {
+  border-bottom: 0;
+}
+
+.planner-time {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.check-paper {
+  max-width: 620px;
+  margin: 0.5rem 0 0.75rem;
+  padding: 1rem 1.25rem;
+  border: 2px solid #9db8a6;
+  border-radius: 8px;
+  background: #f1f8f3;
+  color: #1d1f21;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.check-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 0.4rem 0;
+}
+
+.check-line {
+  flex: 1;
+  min-width: 8rem;
+  border-bottom: 1px solid #333;
+  padding: 0 0.25rem;
+}
+
+.check-line.wide {
+  color: #888;
+}
+
+.check-amount {
+  padding: 0.1rem 0.5rem;
+  border: 1px solid #333;
+  background: #fff;
+  font-weight: 700;
+}
+
+.deposit-slip {
+  min-width: 280px;
+  margin: 0.5rem 0 0.75rem;
+  border-collapse: collapse;
+  font-size: 1.1rem;
+}
+
+.deposit-slip th,
+.deposit-slip td {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.deposit-slip td {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.deposit-total {
+  font-weight: 700;
+  background: var(--surface-2);
+}
+
+.register td:not(:first-child),
+.register th:not(:first-child) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 760px) {
+  .rd-board {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .planner-row {
+    grid-template-columns: 1fr;
+    gap: 0.1rem;
+  }
+
+  .chunk-row {
+    font-size: 1.5rem;
+  }
+}

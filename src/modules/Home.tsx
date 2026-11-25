@@ -11,6 +11,7 @@ const SKILLS = [
   { href: '#/chaise-bank', emoji: '🪑', title: 'Chaise Bank', desc: 'Use your debit card and keep track of your balance.' },
   { href: '#/better-deal', emoji: '🏷️', title: 'Better Deal?', desc: 'Sales, 2-for-1s and "3 for $10". Which costs less?' },
   { href: '#/read-receipt', emoji: '🧾', title: 'Read the Receipt', desc: 'Find the total, tax and change. Spot mistakes.' },
+  { href: '#/checkbook', emoji: '🧾', title: 'Checkbook', desc: 'Write checks, fill in deposit slips, balance a register.' },
   { href: '#/spot-the-scam', emoji: '🚩', title: 'Spot the Scam', desc: 'Texts, emails and pop-ups. Real or scam?' },
 ];
 

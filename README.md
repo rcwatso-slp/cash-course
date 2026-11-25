@@ -13,12 +13,19 @@ See [PLAN.md](PLAN.md) for the roadmap.
 | | **Story Recall** | Voicemails, appointment reminders, recipes, notices and news, read or heard. Questions after, with "look again" as a cue. Can be asked again later (delayed). |
 | | **Remember the Number** | Room numbers, door codes, phone numbers. Forward or backward. Gets longer after a right answer, shorter after two misses. |
 | | **Matching Pairs** | Card-flip visual memory, 3, 6 or 8 pairs. |
+| | **Mental Workout** | Hold 3–5 words in mind, then say them backward, in ABC order or smallest to biggest. Or unscramble a sentence. |
+| | **Chunk It** | Break phone, order and account numbers into chunks, then recall them. |
+| | **Names and Faces** | Meet 2–4 people whose names start like their jobs (Doctor Dana), then recall the names after a wait. |
 | 💬 Language | **Name It** | Picture naming with a cueing hierarchy: meaning → first sound → "say it with me". |
 | | **Point to It** | Hear or read a word, tap the picture. Foils get closer at higher levels (same category, same first sound). |
 | | **Follow Directions** | 1-step → 2–3 step → "before/after", "if/if not" and "except" directions on a picture board. |
 | | **Yes or No** | Simple facts → comparisons, reversals and word meanings. |
 | | **Finish the Sentence** | "Salt and ___" → everyday sentences → less predictable ones. |
 | | **Name Things in a Category** | 30/60/90-second timer and a +1 counter. Goal set per category. |
+| | **What Am I?** | Name the word from 2 clues. Cues: first sound → pick one of two → model. |
+| | **Word Links** | Same meaning, opposite, and words that go together. |
+| | **Category Builder** | Name the group, or pick the one that fits a group. |
+| | **Read and Do** | Written directions on a board of shapes and numbers ("Tap every number bigger than 5"). |
 | 🗣️ Speech | **Loud & Clear** | Live loudness meter with a target line (set from the patient's own voice), long "ah" timing, loud phrases. |
 | | **Say It Clearly** | Words → phrases → sentences, mostly functional. Record and listen back. Clinician rates understood / partly / not understood. |
 | | **Pacing Board** | Tap a box per word at a set pace, with a demo. Shows the words-per-minute. Plus a 5-second pa-ta-ka warm-up with a count. |
@@ -26,12 +33,16 @@ See [PLAN.md](PLAN.md) for the roadmap.
 | | **My Swallow Plan** | Diet, strategies and notes on a printable bedside card. |
 | | **Remember My Strategies** | Recall practice for the patient's own strategies, plus general safety scenarios. |
 | 🧩 Reasoning | **Odd One Out, Analogies, Safety & Problem Solving, Read Between the Lines, What's Wrong Here?** | Multiple choice with a hint → narrowed to two → the answer and why. |
+| | **Deductions** | Clue puzzles for 2–4 people ("Ann does not drink tea"). Every puzzle has exactly one answer. Help shows the clues as a ✓/✗ grid. |
 | 📋 Thinking & Planning | **Put It in Order** | Steps of everyday tasks (3–7). Right steps stay; the rest go back. |
 | | **Pill Organizer** | Read 1–3 labels ("twice a day", "Mon/Wed/Fri", "bedtime") and fill a weekly pill box. Wrong boxes are outlined. |
 | | **Read the Calendar** | Questions about a week of appointments, with time math and schedule clashes. |
 | | **Find Them All** | Cancellation/visual scanning. Results split into **missed on the left vs. right**, useful for neglect. |
 | | **Switch It Up** | Connect 1-2-3… or switch 1-A-2-B… Time and wrong taps logged. |
+| | **Clocks and Time** | Read an analog clock, set one, and work out how long or what time it will be. |
+| | **Daily Planner** | Questions about a day of plans: start and end times, what's next, free time, clashes. |
 | 💵 Money & Community | **Cash Course** | Everything below, unchanged. |
+| | **Checkbook** | Write a check amount in words, total a deposit slip (with cash back), balance a check register. Difficulty follows the Money price setting. |
 
 All content is original. Pictures are emoji, so there's nothing to license and it all works offline.
 

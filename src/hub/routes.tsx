@@ -22,6 +22,15 @@ import FindThemAll from '../modules/executive/FindThemAll';
 import PillOrganizer from '../modules/executive/PillOrganizer';
 import PutInOrder from '../modules/executive/PutInOrder';
 import SwitchItUp from '../modules/executive/SwitchItUp';
+import ChunkIt from '../modules/memory/ChunkIt';
+import MentalWorkout from '../modules/memory/MentalWorkout';
+import NamesFaces from '../modules/memory/NamesFaces';
+import { CategoryBuilder, WhatAmI, WordLinks } from '../modules/language/WordFinding';
+import ReadAndDo from '../modules/language/ReadAndDo';
+import Deductions from '../modules/reasoning/Deductions';
+import Clocks from '../modules/executive/Clocks';
+import Planner from '../modules/executive/Planner';
+import Checkbook from '../modules/Checkbook';
 
 export const HUB_PAGES: Record<string, () => JSX.Element> = {
   'spaced-retrieval': SpacedRetrieval,
@@ -51,4 +60,15 @@ export const HUB_PAGES: Record<string, () => JSX.Element> = {
   calendar: Calendar,
   'find-them-all': FindThemAll,
   'switch-it-up': SwitchItUp,
+  'mental-workout': MentalWorkout,
+  'chunk-it': ChunkIt,
+  'names-pictures': NamesFaces,
+  'what-am-i': WhatAmI,
+  'word-links': WordLinks,
+  'category-builder': CategoryBuilder,
+  'read-and-do': ReadAndDo,
+  deductions: Deductions,
+  clocks: Clocks,
+  planner: Planner,
+  checkbook: Checkbook,
 };
