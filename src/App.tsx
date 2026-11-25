@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ClinicianGate } from './clinician/ClinicianPanel';
-import { FooterVisit } from './clinician/Visits';
+import { ClinicianGate, type Tab as ClinicianTab } from './clinician/ClinicianPanel';
+import { FooterVisit, VisitBar } from './clinician/Visits';
 import { Calculator } from './components/Calculator';
 import { getSessionStart } from './lib/log';
 import { SettingsProvider, useSettings } from './lib/settings';
@@ -75,7 +75,7 @@ function areaOf(route: string): AreaId | null {
 function Shell() {
   const route = useRoute();
   const { settings } = useSettings();
-  const [panelOpen, setPanelOpen] = useState(false);
+  const [panelOpen, setPanelOpen] = useState<false | ClinicianTab | 'default'>(false);
 
   useEffect(() => {
     getSessionStart(); // starts today's session on first use
@@ -123,16 +123,17 @@ function Shell() {
       </header>
       <SrtBanner onPage={route === 'spaced-retrieval'} />
       <main className="app-main">
+        {!page && <VisitBar onOrientation={() => setPanelOpen('orientation')} />}
         {page ?? home}
       </main>
       <footer className="app-footer">
-        <button className="clinician-btn" onClick={() => setPanelOpen(true)}>
+        <button className="clinician-btn" onClick={() => setPanelOpen('default')}>
           🔒 Clinician
         </button>
-        <FooterVisit />
+        {page && <FooterVisit />}
       </footer>
       <Calculator />
-      {panelOpen && <ClinicianGate onClose={() => setPanelOpen(false)} />}
+      {panelOpen && <ClinicianGate onClose={() => setPanelOpen(false)} startTab={panelOpen === 'default' ? undefined : panelOpen} />}
     </div>
   );
 }

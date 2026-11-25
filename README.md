@@ -9,6 +9,7 @@ See [PLAN.md](PLAN.md) for the roadmap.
 | Area | Task | What it practices |
 |---|---|---|
 | 🧠 Memory | **Spaced Retrieval** | One important fact (room number, call button, a safety step) recalled at 30 s → 1 → 2 → 4 → 8 → 16 → 32 min. A miss gives the answer, then goes back one interval. A banner on every page says when it's time to ask, so you can do other tasks in between. |
+| | **WRAP** | A 4-step memory strategy: **W**rite it (type a note or write on paper), **R**epeat it (say it 3 times), **A**ssociate it (link it to something known, with an idea if needed), **P**icture it (an image idea). After the wait, recall it. Cues: use WRAP → link and picture → your note. Level 1: one fact; 2: two parts; 3: three or more. **Learn the steps** quizzes what each letter means and which step is which. |
 | | **Word List** | 3–10 words (with pictures, words only, or heard only) → filler wait → free recall (clinician checks off) → category cues → pick them out of a list. Delayed recall of the last list later in the session. |
 | | **Story Recall** | Voicemails, appointment reminders, recipes, notices and news, read or heard. Questions after, with "look again" as a cue. Can be asked again later (delayed). |
 | | **Remember the Number** | Room numbers, door codes, phone numbers. Forward or backward. Gets longer after a right answer, shorter after two misses. |
@@ -92,6 +93,7 @@ Click **🔒 Clinician** at the bottom-left of any page. The first time, you'll 
 - **Say your order** (restaurants): after ordering, he practices saying it: "Hi, can I get a Grande Caffè Latte with oat milk, please?"
 - **Scam pop-ups** (stores): once per visit, a fake pop-up appears. Closing it is right, and it's logged either way.
 - **Budget and tips:** budget off, a fixed amount, or different each order; tip mode at Grapplebee's (pick 15/18/20%, or work out 15% or 20%)
+- **Main page:** a bar at the top with **Start visit / Stop visit** for the current patient (no PIN), the minutes so far, and a 🧭 **Orientation** button that opens the orientation check (asks for the PIN).
 - **This visit:** a start/stop visit timer for the current patient (tap a time to fix it), then this visit's results, the share done independently, results by skill, and every problem. Starting a visit starts the practice numbers over. **Start visit** is also on each row of the Patients tab.
 - **Visit times:** every visit on a day, for all patients, with start, stop and minutes. Minutes are counted between the clock times shown (10:02 to 10:39 is 37 minutes). Shows minutes per patient and the day's total, lets you add a visit you forgot to time, and exports CSV.
 - **Orientation:** mark the patient oriented, oriented with a cue, or not oriented to person, place, time and situation. Shows Oriented ×0–4 (and ×N with cues), the latest check, each area over time, and every check. Exports CSV.

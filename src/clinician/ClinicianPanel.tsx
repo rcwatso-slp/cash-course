@@ -20,7 +20,7 @@ import { PricesTab } from './PricesTab';
 import { ProgressTab } from './ProgressTab';
 import { DEFAULT_SETTINGS, useSettings, type HelpLevel, type PayWith, type ProfileStore, type Settings } from '../lib/settings';
 
-export function ClinicianGate({ onClose }: { onClose: () => void }) {
+export function ClinicianGate({ onClose, startTab }: { onClose: () => void; startTab?: Tab }) {
   const { settings, update } = useSettings();
   const [unlocked, setUnlocked] = useState(false);
 
@@ -30,7 +30,7 @@ export function ClinicianGate({ onClose }: { onClose: () => void }) {
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
 
-  if (unlocked) return <ClinicianPanel onClose={onClose} />;
+  if (unlocked) return <ClinicianPanel onClose={onClose} startTab={startTab} />;
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
@@ -85,7 +85,7 @@ function PinForm({ label, submitLabel, onSubmit }: { label: string; submitLabel:
   );
 }
 
-type Tab = 'patients' | 'settings' | 'session' | 'visits' | 'orientation' | 'progress' | 'homework' | 'prices' | 'data';
+export type Tab = 'patients' | 'settings' | 'session' | 'visits' | 'orientation' | 'progress' | 'homework' | 'prices' | 'data';
 
 const TAB_LABELS: Record<Tab, string> = {
   patients: 'Patients',
@@ -99,9 +99,9 @@ const TAB_LABELS: Record<Tab, string> = {
   data: 'Data',
 };
 
-function ClinicianPanel({ onClose }: { onClose: () => void }) {
+function ClinicianPanel({ onClose, startTab }: { onClose: () => void; startTab?: Tab }) {
   const { settings, patients } = useSettings();
-  const [tab, setTab] = useState<Tab>(patients.length > 1 ? 'patients' : 'settings');
+  const [tab, setTab] = useState<Tab>(startTab ?? (patients.length > 1 ? 'patients' : 'settings'));
   // Homework and prices are Cash Course tools; hide them when the patient doesn't use money skills.
   const tabs = (Object.keys(TAB_LABELS) as Tab[]).filter((t) => (t !== 'homework' && t !== 'prices') || settings.areas.includes('money'));
   return (

@@ -6,6 +6,7 @@ import { ANALOGIES, INFERENCE, ODD_ONE_OUT, SAFETY, WHATS_WRONG, type ReasonItem
 import { SEQUENCES, sequencesFor } from '../data/hub/sequences';
 import { CLEAR_SPEECH, LOUD_PHRASES, PACING } from '../data/hub/speech';
 import { STORIES } from '../data/hub/stories';
+import { WRAP_ITEMS, WRAP_STEPS_QUIZ } from '../data/hub/wrap';
 import { CATEGORY_ITEMS, RIDDLES, WORD_LINKS } from '../data/hub/wordfinding';
 import { strategyById, SWALLOW_SCENARIOS } from '../data/hub/swallow';
 import type { Settings } from '../lib/settings';
@@ -18,6 +19,8 @@ export interface Bank {
   current: readonly unknown[];
   /** Every level. */
   all: readonly unknown[];
+  /** For a second list inside one task. */
+  title?: string;
 }
 
 const atLevel = <T extends { level: number }>(items: readonly T[], level: number) => {
@@ -37,6 +40,8 @@ export function swallowQuestions(strategies: string[]): { q: string }[] {
 
 export function banksFor(s: Settings): Bank[] {
   return [
+    { task: 'wrap', area: 'memory', current: atLevel(WRAP_ITEMS, s.memoryLevel), all: WRAP_ITEMS },
+    { task: 'wrap-steps', area: 'memory', current: WRAP_STEPS_QUIZ, all: WRAP_STEPS_QUIZ, title: 'WRAP: learn the steps' },
     { task: 'story-recall', area: 'memory', current: atLevel(STORIES, s.memoryLevel), all: STORIES },
     { task: 'name-it', area: 'language', current: picturesUpTo(s.languageLevel), all: PICTURES },
     { task: 'point-to-it', area: 'language', current: picturesUpTo(Math.max(2, s.languageLevel)), all: PICTURES },

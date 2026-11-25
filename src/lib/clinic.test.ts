@@ -92,3 +92,32 @@ describe('orientation', () => {
     expect(csv[2]).toContain('not checked,3,3,Used the calendar');
   });
 });
+
+import { matchesParts } from './text';
+import { WRAP_ITEMS, WRAP_STEPS_QUIZ } from '../data/hub/wrap';
+
+describe('WRAP', () => {
+  it('checks answers with several parts in any order', () => {
+    const parts = [['tuesday', 'tue'], ['2 30', '230', 'two thirty']];
+    expect(matchesParts('Tuesday at 2:30', parts)).toBe(true);
+    expect(matchesParts('2:30 on tue', parts)).toBe(true);
+    expect(matchesParts('Thursday at 2:30', parts)).toBe(false);
+    expect(matchesParts('Tuesday', parts)).toBe(false);
+    expect(matchesParts('milk bread stamps', [['milk'], ['bread'], ['stamp']])).toBe(true);
+    expect(matchesParts('', parts)).toBe(false);
+  });
+
+  it('has at least 10 items at each level, and every answer fits its own parts but no wrong choice does', () => {
+    for (const level of [1, 2, 3]) expect(WRAP_ITEMS.filter((x) => x.level === level).length).toBeGreaterThanOrEqual(10);
+    expect(new Set(WRAP_ITEMS.map((x) => x.id)).size).toBe(WRAP_ITEMS.length);
+    for (const x of WRAP_ITEMS) {
+      expect(matchesParts(x.answer, x.parts), x.id).toBe(true);
+      for (const w of x.wrong) expect(matchesParts(w, x.parts), `${x.id}: ${w}`).toBe(false);
+      expect(new Set([x.answer, ...x.wrong]).size, x.id).toBe(4);
+    }
+  });
+
+  it('has step questions with four different choices', () => {
+    for (const q of WRAP_STEPS_QUIZ) expect(new Set(q.options).size, q.q).toBe(4);
+  });
+});

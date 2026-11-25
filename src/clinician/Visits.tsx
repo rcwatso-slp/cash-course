@@ -322,3 +322,51 @@ export function FooterVisit() {
     </span>
   );
 }
+
+/**
+ * On the main page: start and stop the visit for the current patient without opening the clinician panel,
+ * and a shortcut to the orientation check (which asks for the PIN).
+ */
+export function VisitBar({ onOrientation }: { onOrientation: () => void }) {
+  const { settings, activeId } = useSettings();
+  const [, refresh] = useState(0);
+  const running = runningVisit(activeId);
+  const now = useNow(!!running, 10000);
+  const today = visitsOn(dayKey(now)).filter((v) => v.profileId === activeId);
+  const last = [...today].reverse().find((v) => v.end !== null);
+  const who = settings.nickname || 'Patient';
+
+  return (
+    <div className={`visit-bar ${running ? 'running' : ''}`} role="region" aria-label="Visit">
+      <span className="visit-bar-who">{who}</span>
+      <span className="visit-bar-status" aria-live="polite">
+        {running ? (
+          <>
+            ⏱ <b>{minutesText(visitMinutes(running, now))}</b> since {clockTime(running.start)}
+          </>
+        ) : last ? (
+          <>
+            Last visit {clockTime(last.start)} – {clockTime(last.end!)}, <b>{minutesText(visitMinutes(last))}</b>
+            {today.length > 1 && <> · today {minutesText(dayTotals(today, now).total)}</>}
+          </>
+        ) : (
+          <span className="muted">No visit started</span>
+        )}
+      </span>
+      <span className="visit-bar-buttons">
+        {running ? (
+          <button className="primary" onClick={() => (stopVisit(activeId), refresh((x) => x + 1))}>
+            ■ Stop visit
+          </button>
+        ) : (
+          <button className="primary" onClick={() => (beginVisit(activeId, settings.nickname), refresh((x) => x + 1))}>
+            ▶ Start visit
+          </button>
+        )}
+        <button className="button" onClick={onOrientation}>
+          🧭 Orientation
+        </button>
+      </span>
+    </div>
+  );
+}

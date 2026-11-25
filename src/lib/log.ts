@@ -23,7 +23,8 @@ export type Skill =
   | 'sequencing' | 'pillBox' | 'calendar' | 'scanning' | 'trails'
   // Added: workbook-style skills
   | 'mentalManip' | 'chunking' | 'nameFace' | 'describeNaming' | 'wordLinks' | 'categories' | 'readDo' | 'deduction'
-  | 'clockTime' | 'planner' | 'checkWords' | 'deposit' | 'register';
+  | 'clockTime' | 'planner' | 'checkWords' | 'deposit' | 'register'
+  | 'wrap' | 'wrapSteps';
 
 const MODULE_LABELS: Record<string, string> = {
   quickChange: 'Quick Change',
@@ -104,6 +105,8 @@ export const SKILL_LABELS: Record<Skill, string> = {
   checkWords: 'Writing checks',
   deposit: 'Deposit slips',
   register: 'Check register',
+  wrap: 'WRAP: recall',
+  wrapSteps: 'WRAP: know the steps',
 };
 
 export interface Trial {

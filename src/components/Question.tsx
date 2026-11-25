@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'rea
 import { formatMoney, parseMoney, type Cents } from '../lib/money';
 import { addTrial, type ModuleId, type Skill, type Trial } from '../lib/log';
 import { calculatorUsedSince } from '../lib/speech';
-import { digitsOnly, matchesWord } from '../lib/text';
+import { digitsOnly, matchesParts, matchesWord } from '../lib/text';
 import { useSettings } from '../lib/settings';
 import { ReadAloud } from './ReadAloud';
 
@@ -66,6 +66,8 @@ type Props = BaseProps &
         inputLabel?: string;
         /** Compare digits only (phone numbers, times). */
         digits?: boolean;
+        /** Answers with several parts: each part must be there, in any order (see matchesParts). */
+        parts?: string[][];
       }
     | {
         /** Spoken answers. The clinician marks it. */
@@ -178,7 +180,7 @@ export function Question(props: Props) {
       }
       const ok = props.digits
         ? props.accepted.some((a) => digitsOnly(a) === digitsOnly(text))
-        : matchesWord(text, props.accepted);
+        : matchesWord(text, props.accepted) || (!!props.parts && matchesParts(text, props.parts));
       grade(ok);
       return;
     }

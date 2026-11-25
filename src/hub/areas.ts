@@ -36,6 +36,7 @@ export const AREAS: AreaDef[] = [
 export const TASKS: TaskDef[] = [
   // Memory
   { id: 'spaced-retrieval', area: 'memory', emoji: '⏱️', title: 'Spaced Retrieval', desc: 'Practice one important fact at longer and longer times apart.' },
+  { id: 'wrap', area: 'memory', emoji: '🎁', title: 'WRAP', desc: 'Write it, Repeat it, Associate it, Picture it. Then remember it later.' },
   { id: 'word-list', area: 'memory', emoji: '📝', title: 'Word List', desc: 'Look at a list of words, wait a bit, then say them back.' },
   { id: 'story-recall', area: 'memory', emoji: '📰', title: 'Story Recall', desc: 'Read or listen to a message, then answer questions about it.' },
   { id: 'number-recall', area: 'memory', emoji: '🔢', title: 'Remember the Number', desc: 'Phone numbers, room numbers and times. Forward or backward.' },

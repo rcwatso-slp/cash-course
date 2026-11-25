@@ -35,11 +35,11 @@ export function QuestionBank() {
               const seen = getSeen(activeId, b.task);
               const newHere = countNew(b.current, seen);
               const usedAll = b.all.length - countNew(b.all, seen);
-              const task = taskById(b.task);
+              const task = taskById(b.task) ?? taskById(b.task.split('-')[0]);
               return (
                 <tr key={b.task}>
                   <td>
-                    {task?.emoji} {task?.title} <span className="muted small">({areaById(b.area)?.title})</span>
+                    {task?.emoji} {b.title ?? task?.title} <span className="muted small">({areaById(b.area)?.title})</span>
                   </td>
                   <td className={newHere === 0 ? 'bank-empty' : ''}>
                     {newHere} of {b.current.length}

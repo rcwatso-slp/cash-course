@@ -46,3 +46,20 @@ export function matchesWord(input: string, accepted: readonly string[]): boolean
     return editDistance(said, t) <= allowedTypos(t.length);
   });
 }
+
+/**
+ * For answers with several parts ("Tuesday at 2:30"): every part must be in what they typed,
+ * in any order. Each part lists the ways to say it; a word that starts with one counts (stamp → stamps), but numbers must match whole.
+ */
+export function matchesParts(input: string, parts: readonly (readonly string[])[]): boolean {
+  const said = normalize(input);
+  if (!said) return false;
+  return parts.every((ways) =>
+    ways.some((w) => {
+      const t = normalize(w);
+      // Numbers must be whole: "7" is not "70".
+      const end = /\d$/.test(t) ? '(?!\\d)' : '';
+      return t !== '' && new RegExp(`(^| )${t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}${end}`).test(said);
+    }),
+  );
+}

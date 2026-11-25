@@ -2,6 +2,7 @@
 import MatchingPairs from '../modules/memory/MatchingPairs';
 import NumberRecall from '../modules/memory/NumberRecall';
 import SpacedRetrieval from '../modules/memory/SpacedRetrieval';
+import Wrap from '../modules/memory/Wrap';
 import StoryRecall from '../modules/memory/StoryRecall';
 import WordList from '../modules/memory/WordList';
 import CategoryNaming from '../modules/language/CategoryNaming';
@@ -36,6 +37,7 @@ export const HUB_PAGES: Record<string, () => JSX.Element> = {
   'spaced-retrieval': SpacedRetrieval,
   'word-list': WordList,
   'story-recall': StoryRecall,
+  wrap: Wrap,
   'number-recall': NumberRecall,
   'matching-pairs': MatchingPairs,
   'name-it': NameIt,
