@@ -92,11 +92,13 @@ Click **🔒 Clinician** at the bottom-left of any page. The first time, you'll 
 - **Say your order** (restaurants): after ordering, he practices saying it: "Hi, can I get a Grande Caffè Latte with oat milk, please?"
 - **Scam pop-ups** (stores): once per visit, a fake pop-up appears. Closing it is right, and it's logged either way.
 - **Budget and tips:** budget off, a fixed amount, or different each order; tip mode at Grapplebee's (pick 15/18/20%, or work out 15% or 20%)
-- **This session:** today's results, the share done independently, results by skill, and every problem
+- **This visit:** a start/stop visit timer for the current patient (tap a time to fix it), then this visit's results, the share done independently, results by skill, and every problem. Starting a visit starts the practice numbers over. **Start visit** is also on each row of the Patients tab.
+- **Visit times:** every visit on a day, for all patients, with start, stop and minutes. Minutes are counted between the clock times shown (10:02 to 10:39 is 37 minutes). Shows minutes per patient and the day's total, lets you add a visit you forgot to time, and exports CSV.
+- **Orientation:** mark the patient oriented, oriented with a cue, or not oriented to person, place, time and situation. Shows Oriented ×0–4 (and ×N with cues), the latest check, each area over time, and every check. Exports CSV.
 - **Progress:** a chart of the share done independently each day (by skill or all), and a mastery check per skill. The mastery rule is adjustable, e.g. 80% for 3 sessions in a row with at least 5 problems.
 - **Homework:** printable worksheets (menu math, make change, can I afford it, better deal) with an answer key on a separate page
 - **Prices:** change any price or name to match your area. Saved on that device; the backup in Data carries them to another device.
-- **Data:** export CSV for notes, download/import a JSON backup (includes price edits), delete data
+- **Data:** export CSV for notes, download/import a JSON backup (includes price edits, visit times and orientation checks), delete data
 
 The PIN only keeps settings away from the client. It isn't real security. All data lives in the browser's local storage on that device, so data from his phone and from your laptop stay separate. Use the backup export to move data between devices.
 

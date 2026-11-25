@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ClinicianGate } from './clinician/ClinicianPanel';
+import { FooterVisit } from './clinician/Visits';
 import { Calculator } from './components/Calculator';
 import { getSessionStart } from './lib/log';
 import { SettingsProvider, useSettings } from './lib/settings';
@@ -128,6 +129,7 @@ function Shell() {
         <button className="clinician-btn" onClick={() => setPanelOpen(true)}>
           🔒 Clinician
         </button>
+        <FooterVisit />
       </footer>
       <Calculator />
       {panelOpen && <ClinicianGate onClose={() => setPanelOpen(false)} />}

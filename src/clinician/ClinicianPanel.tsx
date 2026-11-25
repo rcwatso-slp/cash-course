@@ -10,6 +10,11 @@ import { allSeen, mergeSeen, replaceSeen } from '../lib/seen';
 import { AreaSettings } from './AreaSettings';
 import { Field, Select, Toggle } from './fields';
 import { HomeworkTab } from './HomeworkTab';
+import { OrientationTab } from './OrientationTab';
+import { VisitTimer, VisitsTab } from './Visits';
+import { download, today } from './download';
+import { clearVisits, getVisits, mergeVisits, replaceVisits, type Visit } from '../lib/visits';
+import { clearChecks, getChecks, mergeChecks, replaceChecks, type OrientCheck } from '../lib/orientation';
 import { PatientsTab } from './PatientsTab';
 import { PricesTab } from './PricesTab';
 import { ProgressTab } from './ProgressTab';
@@ -80,12 +85,14 @@ function PinForm({ label, submitLabel, onSubmit }: { label: string; submitLabel:
   );
 }
 
-type Tab = 'patients' | 'settings' | 'session' | 'progress' | 'homework' | 'prices' | 'data';
+type Tab = 'patients' | 'settings' | 'session' | 'visits' | 'orientation' | 'progress' | 'homework' | 'prices' | 'data';
 
 const TAB_LABELS: Record<Tab, string> = {
   patients: 'Patients',
   settings: 'Settings',
-  session: 'This session',
+  session: 'This visit',
+  visits: 'Visit times',
+  orientation: 'Orientation',
   progress: 'Progress',
   homework: 'Homework',
   prices: 'Prices',
@@ -114,9 +121,11 @@ function ClinicianPanel({ onClose }: { onClose: () => void }) {
       </header>
       <div className="panel-body">
         {(tab === 'settings' || tab === 'patients') && <MoneyOnlyNote onPatients={() => setTab('patients')} showPatientsLink={tab !== 'patients'} />}
-        {tab === 'patients' && <PatientsTab onPicked={() => setTab('settings')} />}
+        {tab === 'patients' && <PatientsTab onPicked={() => setTab('settings')} onVisit={() => setTab('session')} />}
         {tab === 'settings' && <SettingsTab />}
-        {tab === 'session' && <SessionTab />}
+        {tab === 'session' && <SessionTab onAllVisits={() => setTab('visits')} />}
+        {tab === 'visits' && <VisitsTab />}
+        {tab === 'orientation' && <OrientationTab />}
         {tab === 'progress' && <ProgressTab />}
         {tab === 'homework' && <HomeworkTab onClose={onClose} />}
         {tab === 'prices' && <PricesTab />}
@@ -428,7 +437,7 @@ function SummaryCards({ trials }: { trials: Trial[] }) {
 
 const timeOf = (ms: number) => new Date(ms).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
-function SessionTab() {
+function SessionTab({ onAllVisits }: { onAllVisits: () => void }) {
   const { settings } = useSettings();
   const [started, setStarted] = useState<number | null>(null);
   const start = getSessionStart();
@@ -437,10 +446,11 @@ function SessionTab() {
 
   return (
     <div className="session">
+      <VisitTimer onAllVisits={onAllVisits} />
       <div className="session-head">
         <div>
           <p className="session-start">
-            This session started <b>today at {timeOf(start)}</b>
+            Practice numbers below start <b>today at {timeOf(start)}</b>
             {settings.nickname ? ` for ${settings.nickname}` : ''}.
           </p>
           <p className="muted">"Independent" means right on the first try with no help or cue.</p>
@@ -452,7 +462,7 @@ function SessionTab() {
             setStarted(getSessionStart());
           }}
         >
-          Start a new session
+          Start the numbers over
         </button>
       </div>
 
@@ -541,17 +551,6 @@ function SessionTab() {
 
 // ---------- Data ----------
 
-function download(filename: string, text: string, type: string) {
-  const url = URL.createObjectURL(new Blob([text], { type }));
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-const today = () => new Date().toISOString().slice(0, 10);
-
 function DataTab() {
   const { settings, update, store, replaceProfiles } = useSettings();
   const [message, setMessage] = useState<string | null>(null);
@@ -564,6 +563,7 @@ function DataTab() {
     try {
       const data = JSON.parse(await file.text()) as {
         app?: string; trials?: Trial[]; settings?: Partial<Settings>; prices?: Overrides; profiles?: ProfileStore; seen?: ReturnType<typeof allSeen>;
+        visits?: Visit[]; orientation?: OrientCheck[];
       };
       if (data.app !== 'cash-course' || !Array.isArray(data.trials)) throw new Error('not a backup');
       const known = new Set(all.map((t) => t.id));
@@ -583,6 +583,8 @@ function DataTab() {
       } else if (data.settings) update({ ...data.settings, pin: settings.pin });
       if (data.prices) replaceOverrides(data.prices);
       if (data.seen) replaceSeen(mergeSeen(allSeen(), data.seen));
+      if (Array.isArray(data.visits)) replaceVisits(mergeVisits(getVisits(), data.visits));
+      if (Array.isArray(data.orientation)) replaceChecks(mergeChecks(getChecks(), data.orientation));
       setMessage(`Imported ${added.length} new problems${newPatients ? ` and ${newPatients} new patient${newPatients === 1 ? '' : 's'}` : ''}.`);
       refresh((x) => x + 1);
     } catch {
@@ -594,7 +596,7 @@ function DataTab() {
     <div className="data">
       <p>
         All data stays in this browser on this device. Nothing is sent anywhere. Export a copy for your notes, or a backup to move to another device.
-        The backup has every patient on this device.
+        The backup has every patient on this device, with their visit times and orientation checks.
       </p>
       <SummaryCards trials={mine} />
       <p className="muted">
@@ -607,13 +609,13 @@ function DataTab() {
         </button>
         <button
           className="button"
-          disabled={all.length === 0}
+          disabled={all.length === 0 && getVisits().length === 0 && getChecks().length === 0}
           onClick={() => {
             const { pin: _pin, ...rest } = settings;
             void _pin;
             download(
               `cash-course-backup-${today()}.json`,
-              JSON.stringify({ app: 'cash-course', version: 2, settings: rest, profiles: store, trials: all, prices: getOverrides(), seen: allSeen() }, null, 2),
+              JSON.stringify({ app: 'cash-course', version: 2, settings: rest, profiles: store, trials: all, prices: getOverrides(), seen: allSeen(), visits: getVisits(), orientation: getChecks() }, null, 2),
               'application/json',
             );
           }}
@@ -631,10 +633,12 @@ function DataTab() {
       <p className="muted">This can't be undone. Download a backup first.</p>
       <button
         className="button danger"
-        disabled={all.length === 0}
+        disabled={all.length === 0 && getVisits().length === 0 && getChecks().length === 0}
         onClick={() => {
-          if (window.confirm(`Delete all ${all.length} saved problems on this device? This can't be undone.`)) {
+          if (window.confirm(`Delete all ${all.length} saved problems, every visit time and every orientation check on this device? This can't be undone.`)) {
             clearTrials();
+            clearVisits();
+            clearChecks();
             setMessage('All data deleted.');
             refresh((x) => x + 1);
           }
