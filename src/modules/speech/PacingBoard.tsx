@@ -32,7 +32,7 @@ export function wordsPerMinute(taps: number[]): number | null {
 
 function Pacing() {
   const { settings } = useSettings();
-  const draw = useDeck(PACING[settings.speechLevel]);
+  const draw = useDeck(PACING[settings.speechLevel], 'pacing-board');
   const set = useSet(draw);
   const words = set.item.split(' ');
   const [taps, setTaps] = useState<number[]>([]);
@@ -74,7 +74,7 @@ function Pacing() {
   }
 
   return (
-    <SetFrame set={set} noun="phrases">
+    <SetFrame set={set} noun="phrases" bank={{ items: PACING[settings.speechLevel], task: 'pacing-board' }}>
       <div className="question">
         <div className="q-prompt">
           <p className="q-text">Tap each box as you say each word. Go slowly.</p>

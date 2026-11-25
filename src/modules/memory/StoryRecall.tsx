@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Question } from '../../components/Question';
 import { ReadAloud } from '../../components/ReadAloud';
 import { STORIES, type Story } from '../../data/hub/stories';
-import { TaskPage, useDeck } from '../../hub/Drill';
+import { BankNote, TaskPage, useDeck } from '../../hub/Drill';
 import { choiceHelps, makeOptions } from '../../hub/helps';
 import { useSettings } from '../../lib/settings';
 import { speak } from '../../lib/speech';
@@ -14,8 +14,11 @@ const delayedQueue: { story: Story; at: number }[] = [];
 
 export default function StoryRecall() {
   const { settings } = useSettings();
-  const pool = STORIES.filter((s) => s.level === settings.memoryLevel);
-  const draw = useDeck(pool.length ? pool : STORIES);
+  const pool = useMemo(() => {
+    const atLevel = STORIES.filter((s) => s.level === settings.memoryLevel);
+    return atLevel.length ? atLevel : STORIES;
+  }, [settings.memoryLevel]);
+  const draw = useDeck(pool, 'story-recall');
   const [story, setStory] = useState<Story>(draw);
   const [delayed, setDelayed] = useState(false);
   const [mode, setMode] = useState<'read' | 'listen'>('read');
@@ -38,6 +41,7 @@ export default function StoryRecall() {
 
   return (
     <TaskPage id="story-recall">
+      {phase === 'present' && <BankNote items={pool} task="story-recall" />}
       {phase === 'present' && (
         <div className="question">
           <div className="mode-toggle" role="group" aria-label="Read or listen">

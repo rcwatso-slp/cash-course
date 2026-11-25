@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Question } from '../../components/Question';
 import { sequencesFor } from '../../data/hub/sequences';
 import { SetFrame, TaskPage, useDeck, useSet } from '../../hub/Drill';
@@ -8,7 +8,8 @@ import { useSettings } from '../../lib/settings';
 
 export default function PutInOrder() {
   const { settings } = useSettings();
-  const draw = useDeck(sequencesFor(settings.executiveLevel));
+  const items = useMemo(() => sequencesFor(settings.executiveLevel), [settings.executiveLevel]);
+  const draw = useDeck(items, 'put-in-order');
   const set = useSet(() => {
     const seq = draw();
     let mixed = shuffle(seq.steps);
@@ -25,7 +26,7 @@ export default function PutInOrder() {
 
   return (
     <TaskPage id="put-in-order">
-      <SetFrame set={set} noun="tasks">
+      <SetFrame set={set} noun="tasks" bank={{ items, task: 'put-in-order' }}>
         <Question
           key={set.n}
           module="put-in-order"

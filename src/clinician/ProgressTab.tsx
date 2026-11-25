@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { getTrials, SKILL_LABELS, type Skill, type Trial } from '../lib/log';
 import { byDay, pctOf, skillProgress, type DaySummary, type MasteryRule } from '../lib/progress';
 import { useSettings } from '../lib/settings';
+import { QuestionBank } from './QuestionBank';
 
 const shortDate = (date: string) => {
   const [y, m, d] = date.split('-').map(Number);
@@ -19,7 +20,12 @@ export function ProgressTab() {
   const days = byDay(shown).slice(-20);
 
   if (trials.length === 0) {
-    return <p className="muted">No practice saved yet{settings.nickname ? ` for ${settings.nickname}` : ''}. Progress shows up here after a session.</p>;
+    return (
+      <div className="progress-tab">
+        <p className="muted">No practice saved yet{settings.nickname ? ` for ${settings.nickname}` : ''}. Progress shows up here after a session.</p>
+        <QuestionBank />
+      </div>
+    );
   }
 
   return (
@@ -96,6 +102,7 @@ export function ProgressTab() {
           })}
         </tbody>
       </table>
+      <QuestionBank />
     </div>
   );
 }

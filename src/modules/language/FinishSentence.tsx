@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Question } from '../../components/Question';
 import { SENTENCES } from '../../data/hub/language';
 import { SetFrame, TaskPage, useDeck, useSet } from '../../hub/Drill';
@@ -7,7 +8,8 @@ import { useSettings } from '../../lib/settings';
 
 export default function FinishSentence() {
   const { settings } = useSettings();
-  const draw = useDeck(SENTENCES.filter((s) => s.level === settings.languageLevel));
+  const items = useMemo(() => SENTENCES.filter((s) => s.level === settings.languageLevel), [settings.languageLevel]);
+  const draw = useDeck(items, 'finish-sentence');
   const set = useSet(() => {
     const item = draw();
     return { item, other: pick(item.foils), ...makeOptions([item.answer, ...item.foils].slice(0, Math.max(2, settings.choiceCount))) };
@@ -20,7 +22,7 @@ export default function FinishSentence() {
 
   return (
     <TaskPage id="finish-sentence">
-      <SetFrame set={set} noun="sentences">
+      <SetFrame set={set} noun="sentences" bank={{ items, task: 'finish-sentence' }}>
         <Question
           key={set.n}
           module="finish-sentence"

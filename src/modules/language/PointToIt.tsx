@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Question } from '../../components/Question';
 import { picturesUpTo, PICTURES, type PictureWord } from '../../data/hub/pictures';
 import { SetFrame, TaskPage, useDeck, useSet } from '../../hub/Drill';
@@ -21,7 +21,8 @@ export function pointFoils(target: PictureWord, n: number, level: number): Pictu
 export default function PointToIt() {
   const { settings } = useSettings();
   const [hearOnly, setHearOnly] = useState(false);
-  const draw = useDeck(picturesUpTo(Math.max(2, settings.languageLevel)));
+  const items = useMemo(() => picturesUpTo(Math.max(2, settings.languageLevel)), [settings.languageLevel]);
+  const draw = useDeck(items, 'point-to-it');
   const set = useSet(() => {
     const target = draw();
     const foils = pointFoils(target, Math.max(2, settings.choiceCount) - 1, settings.languageLevel);
@@ -46,7 +47,7 @@ export default function PointToIt() {
           👂 Hear only
         </button>
       </div>
-      <SetFrame set={set} noun="words">
+      <SetFrame set={set} noun="words" bank={{ items, task: 'point-to-it' }}>
         <Question
           key={set.n}
           module="point-to-it"

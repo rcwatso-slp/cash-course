@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from 'react';
 import { ALL_AREAS, type AreaId, type ExerciseRx, type Level, type ResponseMode, type SrtTarget } from '../hub/types';
 import type { ChangeLevel, PriceLevel, Wallet } from './problems';
+import { resetSeen } from './seen';
 import { readJSON, writeJSON } from './storage';
 
 export type PayWith = 'nextBill' | 'twenty' | 'nextDollar' | 'choose';
@@ -272,6 +273,7 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
   const removePatient = useCallback(
     (id: string) =>
       setState((prev) => {
+        if (prev.store.ids.length > 1) resetSeen(id);
         if (prev.store.ids.length <= 1) return prev;
         const ids = prev.store.ids.filter((x) => x !== id);
         const profiles = { ...prev.store.profiles };

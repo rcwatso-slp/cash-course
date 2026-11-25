@@ -23,7 +23,7 @@ export default function SwallowStrategies() {
     ],
     [mine],
   );
-  const draw = useDeck(items);
+  const draw = useDeck(items, 'swallow-strategies');
   const set = useSet(() => {
     const item = draw();
     return { item, ...makeOptions(item.options) };
@@ -36,7 +36,7 @@ export default function SwallowStrategies() {
       {mine.length === 0 && (
         <p className="notice">No personal strategies are set yet, so these are general safety questions. Your therapist can add yours in 🔒 Clinician → Settings → Swallowing.</p>
       )}
-      <SetFrame set={set} noun="questions">
+      <SetFrame set={set} noun="questions" bank={{ items, task: 'swallow-strategies' }}>
         <Question
           key={set.n}
           module="swallow-strategies"

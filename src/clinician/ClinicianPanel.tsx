@@ -6,6 +6,7 @@ import {
 import { CHANGE_LEVELS, PRICE_LEVELS, type ChangeLevel, type PriceLevel } from '../lib/problems';
 import { getOverrides, replaceOverrides, type Overrides } from '../lib/overrides';
 import { ALL_AREAS } from '../hub/types';
+import { allSeen, mergeSeen, replaceSeen } from '../lib/seen';
 import { AreaSettings } from './AreaSettings';
 import { Field, Select, Toggle } from './fields';
 import { HomeworkTab } from './HomeworkTab';
@@ -561,7 +562,9 @@ function DataTab() {
 
   async function importBackup(file: File) {
     try {
-      const data = JSON.parse(await file.text()) as { app?: string; trials?: Trial[]; settings?: Partial<Settings>; prices?: Overrides; profiles?: ProfileStore };
+      const data = JSON.parse(await file.text()) as {
+        app?: string; trials?: Trial[]; settings?: Partial<Settings>; prices?: Overrides; profiles?: ProfileStore; seen?: ReturnType<typeof allSeen>;
+      };
       if (data.app !== 'cash-course' || !Array.isArray(data.trials)) throw new Error('not a backup');
       const known = new Set(all.map((t) => t.id));
       const added = data.trials.filter((t) => !known.has(t.id));
@@ -579,6 +582,7 @@ function DataTab() {
           });
       } else if (data.settings) update({ ...data.settings, pin: settings.pin });
       if (data.prices) replaceOverrides(data.prices);
+      if (data.seen) replaceSeen(mergeSeen(allSeen(), data.seen));
       setMessage(`Imported ${added.length} new problems${newPatients ? ` and ${newPatients} new patient${newPatients === 1 ? '' : 's'}` : ''}.`);
       refresh((x) => x + 1);
     } catch {
@@ -609,7 +613,7 @@ function DataTab() {
             void _pin;
             download(
               `cash-course-backup-${today()}.json`,
-              JSON.stringify({ app: 'cash-course', version: 2, settings: rest, profiles: store, trials: all, prices: getOverrides() }, null, 2),
+              JSON.stringify({ app: 'cash-course', version: 2, settings: rest, profiles: store, trials: all, prices: getOverrides(), seen: allSeen() }, null, 2),
               'application/json',
             );
           }}

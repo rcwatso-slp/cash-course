@@ -3,6 +3,8 @@ import { cell, expectedBox, firstWrongStep, makePillTask, makeScanGrid, scanResu
 import { DEFAULT_SETTINGS, OLD_SETTINGS_KEY, PIN_KEY, PROFILES_KEY, loadStore, type ProfileStore } from './settings';
 import { nextStep, recordProbe, SRT_INTERVALS, startRun } from './srt';
 import { matchesWord, normalize } from './text';
+import { itemKey, mergeSeen, pickNext } from './seen';
+import { banksFor } from '../hub/banks';
 import { nextSpan } from '../modules/memory/NumberRecall';
 import { makeDirection } from '../modules/language/FollowDirections';
 import { PICTURES } from '../data/hub/pictures';
@@ -197,5 +199,61 @@ describe('content', () => {
     }
     for (const s of SENTENCES) expect(s.foils).not.toContain(s.answer);
     for (const st of STORIES) for (const q of st.questions) expect(new Set(q.options).size, q.q).toBe(q.options.length);
+  });
+});
+
+describe('question bank', () => {
+  const items = ['a', 'b', 'c', 'd'];
+
+  it('gives questions the patient has never had first', () => {
+    const seen = { a: 1, b: 2, c: 3 };
+    for (let i = 0; i < 20; i++) expect(pickNext(items, seen, new Set())).toBe('d');
+  });
+
+  it('once all are used, gives the ones from longest ago', () => {
+    const seen = { a: 400, b: 100, c: 300, d: 200 };
+    expect(pickNext(items, seen, new Set(), () => 0)).toBe('b');
+    // The oldest third (rounded up) of 4 is 2 items: b (100) and d (200).
+    const picks = new Set(Array.from({ length: 100 }, () => pickNext(items, seen, new Set())));
+    expect([...picks].sort()).toEqual(['b', 'd']);
+  });
+
+  it('skips questions asked a moment ago while there are others', () => {
+    const seen = { a: 1, b: 2, c: 3, d: 4 };
+    for (let i = 0; i < 20; i++) expect(pickNext(items, seen, new Set(['a', 'b', 'c']))).toBe('d');
+    // If everything was asked recently, it still returns something.
+    expect(items).toContain(pickNext(items, seen, new Set(items)));
+  });
+
+  it('a long session at one level never repeats until every question is used', () => {
+    const seen: Record<string, number> = {};
+    const level1 = SAFETY.filter((x) => x.level === 1);
+    const asked = new Set<string>();
+    for (let i = 0; i < level1.length; i++) {
+      const q = pickNext(level1, seen, new Set());
+      const k = itemKey(q);
+      expect(asked.has(k)).toBe(false);
+      asked.add(k);
+      seen[k] = i + 1;
+    }
+    expect(asked.size).toBe(level1.length);
+  });
+
+  it('merges backups keeping the latest time', () => {
+    expect(mergeSeen({ p: { t: { a: 5 } } }, { p: { t: { a: 3, b: 7 } }, q: { t: { c: 1 } } })).toEqual({ p: { t: { a: 5, b: 7 } }, q: { t: { c: 1 } } });
+  });
+
+  it('can tell every question apart in every bank', () => {
+    const s = { ...DEFAULT_SETTINGS, strategies: ['upright', 'small', 'chinTuck'] };
+    for (const b of banksFor(s)) {
+      const keys = b.all.map(itemKey);
+      expect(new Set(keys).size, b.task).toBe(keys.length);
+    }
+  });
+
+  it('has a full set of questions at every level for reasoning tasks', () => {
+    for (const list of [ODD_ONE_OUT, ANALOGIES, SAFETY, INFERENCE, WHATS_WRONG])
+      for (const level of [1, 2, 3]) expect(list.filter((x) => x.level === level).length).toBeGreaterThanOrEqual(10);
+    for (const level of [1, 2, 3]) expect(SAFETY.filter((x) => x.level === level).length).toBeGreaterThanOrEqual(20);
   });
 });

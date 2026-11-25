@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Question } from '../../components/Question';
 import { YES_NO } from '../../data/hub/language';
 import { SetFrame, TaskPage, useDeck, useSet } from '../../hub/Drill';
@@ -5,14 +6,15 @@ import { useSettings } from '../../lib/settings';
 
 export default function YesOrNo() {
   const { settings } = useSettings();
-  const draw = useDeck(YES_NO.filter((q) => q.level === settings.languageLevel));
+  const items = useMemo(() => YES_NO.filter((q) => q.level === settings.languageLevel), [settings.languageLevel]);
+  const draw = useDeck(items, 'yes-or-no');
   const set = useSet(draw);
   const item = set.item;
   const answer = item.a ? 'Yes' : 'No';
 
   return (
     <TaskPage id="yes-or-no">
-      <SetFrame set={set} noun="questions">
+      <SetFrame set={set} noun="questions" bank={{ items, task: 'yes-or-no' }}>
         <Question
           key={set.n}
           module="yes-or-no"

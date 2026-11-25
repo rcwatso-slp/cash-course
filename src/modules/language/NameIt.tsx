@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Question } from '../../components/Question';
 import { CATEGORY_NAMES, picturesUpTo, PICTURES, type PictureWord } from '../../data/hub/pictures';
 import { SetFrame, TaskPage, useDeck, useSet } from '../../hub/Drill';
@@ -14,7 +15,8 @@ export function pictureFoils(target: PictureWord, n: number, sameCategory = true
 
 export default function NameIt() {
   const { settings } = useSettings();
-  const draw = useDeck(picturesUpTo(settings.languageLevel));
+  const items = useMemo(() => picturesUpTo(settings.languageLevel), [settings.languageLevel]);
+  const draw = useDeck(items, 'name-it');
   const set = useSet(() => {
     const target = draw();
     const foils = pictureFoils(target, settings.choiceCount - 1, settings.languageLevel > 1);
@@ -26,7 +28,7 @@ export default function NameIt() {
 
   return (
     <TaskPage id="name-it">
-      <SetFrame set={set} noun="pictures">
+      <SetFrame set={set} noun="pictures" bank={{ items, task: 'name-it' }}>
         <Question
           key={set.n}
           module="name-it"

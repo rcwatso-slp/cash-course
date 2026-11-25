@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Question } from '../../components/Question';
 import { ANALOGIES, INFERENCE, ODD_ONE_OUT, SAFETY, WHATS_WRONG, type ReasonItem } from '../../data/hub/reasoning';
 import { SetFrame, TaskPage, useDeck, useSet } from '../../hub/Drill';
@@ -17,8 +18,12 @@ interface Props {
 /** Every Reasoning task works the same way: read, pick the best answer, see why. */
 function ReasonDrill({ id, skill, items, intro, lead }: Props) {
   const { settings } = useSettings();
-  const pool = items.filter((i) => i.level === settings.reasoningLevel);
-  const draw = useDeck(pool.length ? pool : items);
+  const level = settings.reasoningLevel;
+  const pool = useMemo(() => {
+    const atLevel = items.filter((i) => i.level === level);
+    return atLevel.length ? atLevel : items;
+  }, [items, level]);
+  const draw = useDeck(pool, id);
   const set = useSet(() => {
     const item = draw();
     return { item, ...makeOptions(item.options) };
@@ -28,7 +33,7 @@ function ReasonDrill({ id, skill, items, intro, lead }: Props) {
 
   return (
     <TaskPage id={id} intro={intro}>
-      <SetFrame set={set} noun="questions">
+      <SetFrame set={set} noun="questions" bank={{ items: pool, task: id }}>
         <Question
           key={set.n}
           module={id}

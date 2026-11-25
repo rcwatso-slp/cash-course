@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ReadAloud } from '../../components/ReadAloud';
 import { FLUENCY_CATEGORIES } from '../../data/hub/language';
 import { TaskPage, useDeck } from '../../hub/Drill';
@@ -10,7 +10,8 @@ type Phase = 'ready' | 'running' | 'done';
 
 export default function CategoryNaming() {
   const { settings } = useSettings();
-  const draw = useDeck(FLUENCY_CATEGORIES.filter((c) => c.level === settings.languageLevel));
+  const items = useMemo(() => FLUENCY_CATEGORIES.filter((c) => c.level === settings.languageLevel), [settings.languageLevel]);
+  const draw = useDeck(items, 'category-naming');
   const [cat, setCat] = useState(draw);
   const [seconds, setSeconds] = useState(60);
   const [goal, setGoal] = useState(settings.languageLevel === 1 ? 5 : 10);

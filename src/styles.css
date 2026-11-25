@@ -4441,3 +4441,21 @@ html[data-contrast='high'] .board-section h3 {
 .money-only-note .button-row {
   margin-top: 0.5rem;
 }
+
+.question-bank {
+  margin-top: 2rem;
+}
+
+.question-bank .data-table td {
+  vertical-align: middle;
+}
+
+.bank-empty {
+  color: var(--bad);
+  font-weight: 600;
+}
+
+.bank-note {
+  max-width: 760px;
+  margin-bottom: 0.5rem;
+}

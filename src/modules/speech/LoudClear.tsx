@@ -131,13 +131,13 @@ function LongAh() {
 
 function LoudPhrases() {
   const { settings } = useSettings();
-  const draw = useDeck(LOUD_PHRASES);
+  const draw = useDeck(LOUD_PHRASES, 'loud-clear');
   const set = useSet(draw);
   const [peak, setPeak] = useState(0);
   const onLevel = useCallback((l: number) => setPeak((p) => Math.max(p, l)), []);
 
   return (
-    <SetFrame set={set} noun="phrases">
+    <SetFrame set={set} noun="phrases" bank={{ items: LOUD_PHRASES, task: 'loud-clear' }}>
       {settings.micOn && <MicMeter onLevel={onLevel} />}
       <Question
         key={set.n}

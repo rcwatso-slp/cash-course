@@ -16,7 +16,7 @@ const RATINGS = [
 export default function SayItClearly() {
   const { settings } = useSettings();
   const level = settings.speechLevel;
-  const draw = useDeck(CLEAR_SPEECH[level]);
+  const draw = useDeck(CLEAR_SPEECH[level], 'say-it-clearly');
   const set = useSet(draw);
   const rec = useRecorder();
   const [rated, setRated] = useState<string | null>(null);
@@ -51,7 +51,7 @@ export default function SayItClearly() {
   return (
     <TaskPage id="say-it-clearly" intro="Say it slowly. Open your mouth wide and make every sound clear.">
       {!settings.micOn && <MicOffNote />}
-      <SetFrame set={set} noun={['words', 'phrases', 'sentences'][level - 1]}>
+      <SetFrame set={set} noun={['words', 'phrases', 'sentences'][level - 1]} bank={{ items: CLEAR_SPEECH[level], task: 'say-it-clearly' }}>
         <div className="question">
           <div className="q-prompt">
             <p className="q-text say-big">“{set.item}”</p>
